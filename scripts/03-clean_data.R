@@ -1,44 +1,38 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw plane data
+# Author: Angel Xu
+# Date: 22 November 2024
+# Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: None
+# Any other information needed? None
 
 #### Workspace setup ####
 library(tidyverse)
+library(dplyr)
 
 #### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+# Read the raw data
+raw_data <- read_csv("data/01-raw_data/active_applications.csv")
 
+# Convert 'IN_DATE' to Date format
+raw_data$IN_DATE <- as.Date(raw_data$IN_DATE, format = "%Y-%m-%d")
+
+# Clean, mutate and select wanted columns
 cleaned_data <-
   raw_data |>
   janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
+  select(application_type, in_date, planning_district, c_of_a_descision) |>
+  filter(grepl("approved|refused|approval", c_of_a_descision, ignore.case = TRUE)) |> 
+  mutate(c_of_a_descision = ifelse(
+    grepl("approved|approval", c_of_a_descision, ignore.case = TRUE),
+    "Approval",
+    "Refuse"
+  )) |> 
+  rename(date = in_date,
+         decision = c_of_a_descision
          ) |> 
   tidyr::drop_na()
 
 #### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+write_csv(cleaned_data, "data/02-analysis_data/analysis_data.csv")

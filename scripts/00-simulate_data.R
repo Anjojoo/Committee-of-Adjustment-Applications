@@ -1,9 +1,8 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of Australian electoral divisions, including the 
-  #state and party that won each division.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: Simulates a dataset of Adjustment Applications Committee.
+# Author: Angel Xu
+# Date: 22 November 2024
+# Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: The `tidyverse` package must be installed
 # Any other information needed? Make sure you are in the `starter_folder` rproj
@@ -11,42 +10,52 @@
 
 #### Workspace setup ####
 library(tidyverse)
-set.seed(853)
+set.seed(1212)
 
 
 #### Simulate data ####
-# State names
-states <- c(
-  "New South Wales",
-  "Victoria",
-  "Queensland",
-  "South Australia",
-  "Western Australia",
-  "Tasmania",
-  "Northern Territory",
-  "Australian Capital Territory"
+# District names
+planning_district <- c(
+  "North York",
+  "Toronto East York",
+  "Etobicoke York",
+  "Scarborough"
 )
 
-# Political parties
-parties <- c("Labor", "Liberal", "Greens", "National", "Other")
+# Application types
+application_type <- c("MV", "CO")
+
+# Decision types
+decision <- c("Approval", "Refused")
+
+# Set a date range
+start_date <- as.Date("2013-01-01")
+end_date <- as.Date("2023-12-31")
 
 # Create a dataset by randomly assigning states and parties to divisions
-analysis_data <- tibble(
-  division = paste("Division", 1:151),  # Add "Division" to make it a character
-  state = sample(
-    states,
-    size = 151,
+simulated_data <- tibble(
+  application_type = sample(
+    application_type,
+    size = 500,
     replace = TRUE,
-    prob = c(0.25, 0.25, 0.15, 0.1, 0.1, 0.1, 0.025, 0.025) # Rough state population distribution
-  ),
-  party = sample(
-    parties,
-    size = 151,
+    prob = c(0.3, 0.7) # Rough distribution
+  ), 
+  dates = as.Date(sample(seq(start_date, end_date, by = "day"), 500, replace = TRUE)), 
+  planning_district = sample(
+    planning_district,
+    size = 500,
     replace = TRUE,
-    prob = c(0.40, 0.40, 0.05, 0.1, 0.05) # Rough party distribution
+    prob = c(0.40, 0.40, 0.15, 0.05) # Rough distribution
+  ), 
+  decision = sample(
+    decision,
+    size = 500,
+    replace = TRUE,
+    prob = c(0.6, 0.4) # Rough distribution
   )
 )
 
 
 #### Save data ####
-write_csv(analysis_data, "data/00-simulated_data/simulated_data.csv")
+write_csv(simulated_data, "data/00-simulated_data/simulated_data.csv")
+
