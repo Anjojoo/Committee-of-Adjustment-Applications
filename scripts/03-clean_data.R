@@ -11,6 +11,9 @@
 library(tidyverse)
 library(dplyr)
 library(arrow)
+library(lintr)
+library(styler)
+library(here)
 
 #### Clean data ####
 # Read the raw data
@@ -24,16 +27,22 @@ cleaned_data <-
   raw_data |>
   janitor::clean_names() |>
   select(application_type, in_date, planning_district, c_of_a_descision) |>
-  filter(grepl("approved|refused|approval", c_of_a_descision, ignore.case = TRUE)) |> 
+  filter(grepl("approved|refused|approval", c_of_a_descision,
+               ignore.case = TRUE)) |>
   mutate(c_of_a_descision = ifelse(
     grepl("approved|approval", c_of_a_descision, ignore.case = TRUE),
-    "Approval",
-    "Refused"
-  )) |> 
+    1, 0
+  )) |>
   rename(date = in_date,
-         decision = c_of_a_descision
-         ) |> 
+    decision = c_of_a_descision
+  ) |>
   tidyr::drop_na()
 
 #### Save data ####
 write_parquet(cleaned_data, "data/02-analysis_data/analysis_data.parquet")
+write_csv(cleaned_data, "data/02-analysis_data/analysis_data.csv")
+
+
+#### Lint and style the code ####
+lint(filename = here("scripts/03-clean_data.R"))
+style_file(path = here("scripts/03-clean_data.R"))

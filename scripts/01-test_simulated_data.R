@@ -47,7 +47,7 @@ check_column_types <- function(data) {
   if (!is.Date(as.Date(data$date))) stop("Error: 'date' column must be in Date format.")
   if (!is.character(data$application_type)) stop("Error: 'application_type' column must be character.")
   if (!is.character(data$planning_district)) stop("Error: 'planning_district' column must be character.")
-  if (!is.character(data$decision)) stop("Error: 'decision' column must be character.")
+  if (!is.numeric(data$decision)) stop("Error: 'decision' column must be character.")
   message("Check passed: All columns have the correct format.")
 }
 
@@ -82,7 +82,7 @@ check_planning_districts <- function(data) {
 
 # Test if 'decision' values are within the result list
 check_decision_values <- function(data) {
-  valid_decisions <- c("Approval", "Refused")
+  valid_decisions <- c(1, 0)
   if (!all(data$decision %in% valid_decisions)) {
     stop("Error: Invalid 'decision' values found.")
   } else {

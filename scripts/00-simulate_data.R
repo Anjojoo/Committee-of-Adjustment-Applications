@@ -31,7 +31,7 @@ planning_district <- c(
 application_type <- c("MV", "CO")
 
 # Decision types
-decision <- c("Approval", "Refused")
+decision <- c(1, 0)
 
 # Set a date range
 start_date <- as.Date("2011-02-23")
@@ -70,4 +70,3 @@ write_parquet(simulated_data, "data/00-simulated_data/simulated_data.parquet")
 #### Lint and style the code ####
 lint(filename = here("scripts/00-simulate_data.R"))
 style_file(path = here("scripts/00-simulate_data.R"))
-
