@@ -36,7 +36,7 @@ Why it matters paragraph
 Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
 
 
-
+## Estimand
 
 
 
@@ -65,13 +65,7 @@ Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 #| fig-cap: Bills of penguins
 #| echo: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+
 ```
 
 Talk more about it.
@@ -87,12 +81,7 @@ And also planes (@fig-planes). (You can change the height and width, but don't w
 
 analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+
 ```
 
 Talk way more about it. 
@@ -110,11 +99,15 @@ Use sub-sub-headings for each outcome variable and feel free to combine a few in
 
 
 
-# Model
+# Model {#sec-model}
 
-The goal of our modelling strategy is twofold. Firstly,...
+In this paper, a Bayesian logistic model will be utilized to understand how factors such as application type, submission date, and planning district influence the decisions of the application committee. This model estimates the probability of an application being approved (P(Approval)) based on the given predictors.
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
+
+Here we briefly describe the Bayesian analysis model used to investigate, and include justification for model and the variables, as well as discuss underlying assumptions, potential limitations, software used to implement the model, and evidence of model validation and checking.
+
+Background details and diagnostics are included in [Appendix -@sec-model-details].
 
 ## Model set-up
 
@@ -129,14 +122,30 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 \sigma &\sim \mbox{Exponential}(1)
 \end{align}
 
+Combining all the components, the complete model can be expressed as:
+
+\begin{equation}
+\log\left(\frac{\hat{p}}{1 - \hat{p}}\right) = \beta_0 + \beta_1 \times \text{application type} + \beta_2 \times \text{submission date} + \beta_3 \times \text{planning district}
+\end{equation}
+
+- $\hat{p}$: Decision outcome (1 = approval, 0 = refusal).
+- $\beta_0$: Intercept, representing the baseline log-odds of approval for the reference levels of the predictors.
+- $\beta_1$: Coefficients for application_type (dummy-coded, with CO as the reference category).
+- $\beta_2$: Coefficient for date (measured as the year of submission to capture temporal trends).
+- $\beta_3$: Coefficients for planning_district (dummy-coded, with North York as the reference category).
+
+
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 
 ### Model justification
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+We expect a ... relationship between ... In particular...
 
 We can use maths by including latex between dollar signs, for instance $\theta$.
+
+
+### Model Implementation
 
 
 # Results

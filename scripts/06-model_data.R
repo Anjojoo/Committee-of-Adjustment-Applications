@@ -11,19 +11,29 @@
 #### Workspace setup ####
 library(tidyverse)
 library(rstanarm)
+library(lintr)
+library(styler)
+library(here)
 
 #### Read data ####
-analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
+analysis_data <- read_csv("data/02-analysis_data/analysis_data.csv")
 
-### Model data ####
-first_model <-
+
+# Ensure categorical variables are treated as factors
+analysis_data <- analysis_data %>%
+  mutate(
+    application_type = as.factor(application_type),
+    planning_district = as.factor(planning_district)
+  )
+
+#### Model data ####
+first_model <- 
   stan_glm(
-    formula = flying_time ~ length + width,
+    formula = decision ~ application_type + date + planning_district,
     data = analysis_data,
-    family = gaussian(),
+    family = binomial(link = "logit"), # Logistic regression
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
     prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_aux = exponential(rate = 1, autoscale = TRUE),
     seed = 853
   )
 
@@ -35,3 +45,6 @@ saveRDS(
 )
 
 
+#### Lint and style the code ####
+lint(filename = here("scripts/00-simulate_data.R"))
+style_file(path = here("scripts/00-simulate_data.R"))
