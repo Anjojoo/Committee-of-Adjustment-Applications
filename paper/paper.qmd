@@ -172,8 +172,20 @@ Logistic regression assumes that the predictors are not perfectly correlated, as
 The model assumes that all relevant predictors are included and correctly specified. Omitting important variables or including irrelevant ones could lead to biased estimates or reduced transparency. For example, excluding interaction terms when they are theoretically justified might result in incomplete understanding of the predictors' effects.
 
 
-### Model Limitation
+### Potential Limitation and Addressing Violation
 
+Violations of the above assumptions can impact this model’s validity while severl solution are listed below:
+
+1. Non-linearity:
+Adding polynomial terms or splines could address non-linear relationships if diagnostic checks suggest deviations.
+
+2. Dependence:
+If observations are not independent (e.g. decisions clustered by region), hierarchical models or random effects may be introduced.
+
+3. Multicollinearity:
+Variance inflation factors or correlation matrices can help identify multicollinearity issues, which can be resolved by removing or combining correlated predictors.
+
+By adhering to these assumptions and addressing potential violations, the Bayesian logistic regression model provides a robust and effective framework for analyzing the factors influencing application outcomes.
 
 
 ### Model Implementation
