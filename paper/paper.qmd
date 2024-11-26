@@ -111,38 +111,69 @@ Background details and diagnostics are included in [Appendix -@sec-model-details
 
 ## Model set-up
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+In the Bayesian logistic regression model, the response variable $y$ follows a Bernoulli distribution, reflecting its binary nature. Coefficients $\beta_k$ (where k=0,1,2,3) of every predictor variables follow a Normal distribution. Specifically:
 
 \begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
+y_i|p_i &\sim \mbox{Bern}(p_i) \\
+\beta_0 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_1 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_2 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_3 &\sim \mbox{Normal}(0, 2.5)
 \end{align}
 
 Combining all the components, the complete model can be expressed as:
 
 \begin{equation}
-\log\left(\frac{\hat{p}}{1 - \hat{p}}\right) = \beta_0 + \beta_1 \times \text{application type} + \beta_2 \times \text{submission date} + \beta_3 \times \text{planning district}
+\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \times \text{application type} + \beta_2 \times \text{submission date} + \beta_3 \times \text{planning district}
 \end{equation}
 
-- $\hat{p}$: Decision outcome (1 = approval, 0 = refusal).
+- $p_i$: the probability for the binary outcome variable to be 1 (1 = approval, 0 = refusal).
 - $\beta_0$: Intercept, representing the baseline log-odds of approval for the reference levels of the predictors.
-- $\beta_1$: Coefficients for application_type (dummy-coded, with CO as the reference category).
-- $\beta_2$: Coefficient for date (measured as the year of submission to capture temporal trends).
-- $\beta_3$: Coefficients for planning_district (dummy-coded, with North York as the reference category).
+- $\beta_1$: Coefficients for application type, dummy-coded with CO as the reference category.
+- $\beta_2$: Coefficient for date, measured as the year of application to capture temporal trends.
+- $\beta_3$: Coefficients for planning district, dummy-coded with North York as the reference category.
 
+In the above Bayesian logistic regression model, the coefficients $\beta = {\beta_0, \beta_1, \beta_2, \beta_3}$ are treated as random variables, each following a specified prior distribution. These priors represent our initial beliefs about the plausible values of the coefficients before observing the data. In this model, each $\beta_k$ (where k=0,1,2,3) is assigned a normal distribution, with a zero mean and 2.5 standard deviation. The choice of these parameters reflects a weakly informative prior, centered around zero to express no strong prior belief about the direction or magnitude of the effects, while allowing for reasonable variability in the coefficient estimates.
+
+The normal distribution is particularly suitable for these priors because it reflects a belief that most effects are likely to be small or moderate, centered around zero, while allowing for deviations in either direction. The standard deviation of 2.5 is a practical choice for weakly informative priors, offering a balance between constraining the parameters and allowing the data to influence the estimates. This ensures that the model avoids overfitting, particularly when data is sparse or multicollinearity exists among predictors.
+
+After observing the data, the posterior distributions of $\beta$ are obtained by combining these priors with the likelihood of the observed outcomes. The resulting posterior distributions provide updated beliefs about the coefficients, incorporating both prior knowledge and evidence from the data. This approach allows for robust inference, offering a clear quantification of parameter uncertainty and supporting more nuanced interpretations of the predictors' effects.
 
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 
 ### Model justification
 
-We expect a ... relationship between ... In particular...
+The Bayesian logistic regression model is an appropriate choice for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which quantifies uncertainty more effectively than frequentist alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach enhances flexibility and provides richer insights through posterior distributions.
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+Compared to traditional generalized linear models (GLM), the Bayesian approach allows for the inclusion of prior beliefs through weakly informative priors ($N(0, 2.5)$) for all coefficients. These priors help stabilize the model, particularly in cases where data is sparse or multicollinear, without overwhelming the contribution of the observed data. Additionally, Bayesian methods yield full posterior distributions rather than single-point estimates, allowing for a clearer understanding of parameter uncertainty and a better capacity to incorporate uncertainty into decision-making processes. These advantages make the Bayesian logistic regression model preferable to a standard GLM, which provides point estimates and relies on asymptotic approximations for inference.
+
+The model also stands out against simpler approaches, such as simple linear regression (SLR). While SLR might be used for binary outcomes in certain contexts, it is theoretically inappropriate because it does not constrain predictions to the [0,1] interval. This can result in nonsensical predicted probabilities outside this range. Moreover, SLR assumes a linear relationship between predictors and the response variable, which is unsuitable for binary outcomes. The logit transformation in logistic regression, by contrast, ensures a proper probabilistic framework while preserving interpretability in terms of log-odds.
+
+The predictors included in the model further justify the choice of Bayesian logistic regression. Application type captures fundamental differences in how various categories of applications, such as minor variances and consents, might affect approval outcomes. Submission date is treated as a continuous variable, reflecting temporal trends without arbitrary grouping, while planning district accounts for geographic variability through categorical indicators. These predictors are naturally suited to a logistic framework, and the Bayesian approach accommodates any inherent variability in their effects.
+
+In summary, Bayesian logistic regression provides a robust, clarified, and flexible framework for analyzing the factors influencing application decisions. Its advantages over GLM and SLR include the ability to incorporate prior information, quantify uncertainty, and handle the non-linear nature of the binary response variable. By balancing methodological rigor with practical transparency, this model ensures that the analysis remains both statistically sound and actionable for stakeholders.
+
+
+### Model Assumption
+
+This Bayesian model relies on several assumptions that ensure the validity of its predictions and the transparency of its coefficients. While these assumptions are generally less restrictive than those for simpler models like linear regression, they remain critical to the robustness of the results. The key assumptions are listed below:
+
+1. Binary Response Variable
+The model assumes that the response variable ($y$) is binary, taking values of either 1 (approval) or 0 (refused). This assumption aligns with the nature of the data, as application decisions are dichotomous outcomes. Any deviations from binary coding would invalidate the logistic framework and require alternative modeling approaches.
+
+2. Independence of Observations:
+The model assumes that all observations are independent of one another. This is reasonable for application data, as each decision is typically made independently by the committee. However, if clustering or dependence exists (e.g., decisions within the same planning district are correlated), the model may need to incorporate hierarchical or random effects to address these dependencies.
+
+3. No Perfect Multicollinearity
+Logistic regression assumes that the predictors are not perfectly correlated, as this would prevent the model from estimating unique coefficients. For example, if a predictor is a linear combination of other predictors, the model would fail to converge. In this analysis, categorical variables of application type and planning district are appropriately encoded to avoid such issues.
+
+4. Proper Model Specification
+The model assumes that all relevant predictors are included and correctly specified. Omitting important variables or including irrelevant ones could lead to biased estimates or reduced transparency. For example, excluding interaction terms when they are theoretically justified might result in incomplete understanding of the predictors' effects.
+
+
+### Model Limitation
+
 
 
 ### Model Implementation
