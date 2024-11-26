@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
+This project analyzes the determinants of application approval within Toronto's Committee of Adjustment using a Bayesian logistic regression model. The study explores how factors such as application type, submission year, and planning district influence the likelihood of approval.
 
 
 ## File Structure
@@ -19,12 +19,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
-
-## Some checks
-
-- [ ] Change the rproj file name so that it's not starter_folder.Rproj
-- [ ] Change the README title so that it's not Starter folder
-- [ ] Remove files that you're not using
-- [ ] Update comments in R scripts
-- [ ] Remove this checklist
+ChatGPT 4o mini was used to provide assistance on coding, resolving issues occurring in the process of constructing models, and on interpreting and evaluating models. Entire chat history is available in `other/llms/usage.txt`.

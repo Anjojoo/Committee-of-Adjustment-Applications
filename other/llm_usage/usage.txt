@@ -62,3 +62,20 @@ mutate(): Creates or transforms the C_OF_A_DESCISION column in the dataset.
 ifelse(): Checks if the C_OF_A_DESCISION column contains "approved" or "approval" (case-insensitive) and assigns "Approval"; otherwise, it assigns "Refuse."
 grepl(): Performs the keyword matching in a case-insensitive manner.
 This code ensures the column is standardized into two categories: "Approval" and "Refuse." Let me know if you need further assistance!
+
+
+cite this data in bibetex format, https://open.toronto.ca/dataset/committee-of-adjustment-applications/
+ChatGPT：
+ChatGPT
+Here's the BibTeX citation for the dataset you referenced:
+
+bibtex
+@misc{toronto_committee_adjustment_2024,
+  title = {Committee of Adjustment Applications},
+  author = {{City of Toronto Open Data Portal}},
+  year = {2024},
+  url = {https://open.toronto.ca/dataset/committee-of-adjustment-applications/},
+  note = {Accessed: 2024-11-26}
+}
+Replace the Accessed date with the actual date you accessed the dataset if it differs.
+

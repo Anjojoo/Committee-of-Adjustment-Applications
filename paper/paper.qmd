@@ -1,14 +1,13 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
-author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: [https://github.com/RohanAlexander/starter_folder](https://github.com/RohanAlexander/starter_folder)."
+title: "Understanding Factors Contributing to Application Approval in Urban Planning Decisions"
+subtitle: "Analysis using data from Toronto’s Committee of Adjustment applications leveraging Bayesian Logistic Regression"
+author: Angel Xu
+thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 format: pdf
+toc: true
 number-sections: true
 bibliography: references.bib
 ---
@@ -19,7 +18,10 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(opendatatoronto)
+library(modelsummary)
+
+analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
 ```
 
 
@@ -44,7 +46,12 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 
 ## Overview
 
-We use the statistical programming language R [@citeR].... Our data [@shelter].... Following @tellingstories, we consider...
+Our data [@scommittee_application].... 
+
+The analyses presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
+
+
+Following @tellingstories, we consider...
 
 Overview text
 
@@ -54,17 +61,35 @@ Some paragraphs about how we go from a phenomena in the world to an entry in the
 
 ## Outcome variables
 
-Add graphs, tables and text. Use sub-sub-headings for each outcome variable or update the subheading to be singular.
+outcome variable: decision
 
-
-
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+@fig-decision shows the distribution of application decisions.
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
+#| label: fig-decision
+#| fig-cap: Distribution of Application Decisions
 #| echo: false
+#| warning: false
+#| message: false
 
+#### Workspace Setup####
+library(ggplot2)
+
+#### Plot the distribution of `decision` ####
+ggplot(analysis_data, aes(x = factor(decision))) +
+  geom_bar(fill = "lightblue", color = "black") +
+  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  labs(
+    x = "Decision (0 = Refused, 1 = Approved)",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
 
 ```
 
@@ -79,7 +104,7 @@ And also planes (@fig-planes). (You can change the height and width, but don't w
 #| warning: false
 #| message: false
 
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
+
 
 
 ```
@@ -88,20 +113,105 @@ Talk way more about it.
 
 ## Predictor variables
 
+### Application type
+
 Add graphs, tables and text.
 
 Use sub-sub-headings for each outcome variable and feel free to combine a few into one if they go together naturally.
 
+@fig-application-types presents the distribution of application types.
+
+```{r}
+#| label: fig-application-types
+#| fig-cap: Distribution of Application Types
+#| echo: false
+#| warning: false
+#| message: false
+
+#### Plot the distribution of `application_type` ####
+ggplot(analysis_data, aes(x = factor(application_type))) +
+  geom_bar(fill = "lightgreen", color = "black") +
+  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  labs(
+    x = "Application Type",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
 
 
+```
+
+### Year
+
+@fig-year presents the distribution of application years
+
+```{r}
+#| label: fig-year
+#| fig-cap: Distribution of Applications Years
+#| echo: false
+#| warning: false
+#| message: false
+
+#### Plot the distribution of `year` ####
+ggplot(analysis_data, aes(x = factor(year))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  labs(
+    x = "Year",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text = element_text(size = 12)
+  )
 
 
+```
+
+### Planning District
+
+@fig-district shows the distribution of planning district.
+
+```{r}
+#| label: fig-district
+#| fig-cap: Distribution of Planning District
+#| echo: false
+#| warning: false
+#| message: false
+
+#### Plot the distribution of `planning_district` ####
+ggplot(analysis_data, aes(x = factor(planning_district))) +
+  geom_bar(fill = "coral", color = "black") +
+  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  labs(
+    x = "Planning District",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16),
+    axis.title.x = element_text(size = 14),
+    axis.title.y = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1) # Rotate district labels for readability
+  )
+
+```
 
 
 
 # Model {#sec-model}
 
-In this paper, a Bayesian logistic model will be utilized to understand how factors such as application type, submission date, and planning district influence the decisions of the application committee. This model estimates the probability of an application being approved (P(Approval)) based on the given predictors.
+In this paper, a Bayesian logistic model will be utilized to understand how factors such as application type, submission year, and planning district influence the decisions of the application committee. This model estimates the probability of an application being approved (P(Approval)) based on the given predictors.
 
 The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
 
@@ -124,13 +234,13 @@ y_i|p_i &\sim \mbox{Bern}(p_i) \\
 Combining all the components, the complete model can be expressed as:
 
 \begin{equation}
-\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \times \text{application type} + \beta_2 \times \text{submission date} + \beta_3 \times \text{planning district}
+\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 \times \text{application type} + \beta_2 \times \text{year} + \beta_3 \times \text{planning district}
 \end{equation}
 
 - $p_i$: the probability for the binary outcome variable to be 1 (1 = approval, 0 = refusal).
 - $\beta_0$: Intercept, representing the baseline log-odds of approval for the reference levels of the predictors.
 - $\beta_1$: Coefficients for application type, dummy-coded with CO as the reference category.
-- $\beta_2$: Coefficient for date, measured as the year of application to capture temporal trends.
+- $\beta_2$: Coefficient for year, measured as the year of application to capture temporal trends.
 - $\beta_3$: Coefficients for planning district, dummy-coded with North York as the reference category.
 
 In the above Bayesian logistic regression model, the coefficients $\beta = {\beta_0, \beta_1, \beta_2, \beta_3}$ are treated as random variables, each following a specified prior distribution. These priors represent our initial beliefs about the plausible values of the coefficients before observing the data. In this model, each $\beta_k$ (where k=0,1,2,3) is assigned a normal distribution, with a zero mean and 2.5 standard deviation. The choice of these parameters reflects a weakly informative prior, centered around zero to express no strong prior belief about the direction or magnitude of the effects, while allowing for reasonable variability in the coefficient estimates.
