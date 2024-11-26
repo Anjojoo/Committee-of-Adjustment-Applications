@@ -43,19 +43,29 @@ check_required_columns <- function(data, required_columns) {
 
 # Check if each column has the correct data type
 check_column_types <- function(data) {
-  if (!is.Date(as.Date(data$date))) stop("Error: 'date' column must be in Date format.")
-  if (!is.character(data$application_type)) stop("Error: 'application_type' column must be character.")
-  if (!is.character(data$planning_district)) stop("Error: 'planning_district' column must be character.")
-  if (!is.numeric(data$decision)) stop("Error: 'decision' column must be character.")
+  if (!is.numeric(data$year)) {
+    stop("Error: 'year' column must be numbers.")
+  }
+  if (!is.character(data$application_type)) {
+    stop("Error: 'application_type' column must be character.")
+  }
+  if (!is.character(data$planning_district)) {
+    stop("Error: 'planning_district' column must be character.")
+  }
+  if (!is.numeric(data$decision)) {
+    stop("Error: 'decision' column must be numbers.")
+  }
   message("Check passed: All columns have the correct format.")
 }
 
-# Test if all 'date' values are between Feb 23, 2011, and Oct 22, 2024
-check_date_range <- function(data) {
-  if (!all(as.Date(data$date) >= as.Date("2011-02-23") & as.Date(data$date) <= as.Date("2024-10-22"))) {
-    stop("Error: 'date' column contains values outside the valid range (2011-02-23 to 20234-10-22).")
+# Test if all 'year' values are between 2016, and 2024
+check_year_range <- function(data) {
+  if (!all(data$year >= 2016 &
+    data$year <= 2024)) {
+    stop("Error: 'year' column contains values outside
+         the valid range (2016 to 2024).")
   } else {
-    message("Check passed: All 'date' values are within the proper range.")
+    message("Check passed: All 'year' values are within the proper range.")
   }
 }
 
@@ -71,8 +81,10 @@ check_application_types <- function(data) {
 
 # Test if 'planning_district' values are within the district list
 check_planning_districts <- function(data) {
-  valid_districts <- c("Etobicoke York", "North York", "Scarborough",
-                       "Toronto East York")
+  valid_districts <- c(
+    "Etobicoke York", "North York", "Scarborough",
+    "Toronto East York"
+  )
   if (!all(data$planning_district %in% valid_districts)) {
     stop("Error: Invalid 'planning_district' values found.")
   } else {
@@ -91,10 +103,13 @@ check_decision_values <- function(data) {
 }
 
 # Run all checks
-required_columns <- c("application_type", "date", "planning_district", "decision")
+required_columns <- c(
+  "application_type", "year",
+  "planning_district", "decision"
+)
 check_required_columns(analysis_data, required_columns)
 check_column_types(analysis_data)
-check_date_range(analysis_data)
+check_year_range(analysis_data)
 check_application_types(analysis_data)
 check_planning_districts(analysis_data)
 check_decision_values(analysis_data)

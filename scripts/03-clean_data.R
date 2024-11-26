@@ -26,16 +26,21 @@ raw_data$IN_DATE <- as.Date(raw_data$IN_DATE, format = "%Y-%m-%d")
 cleaned_data <-
   raw_data |>
   janitor::clean_names() |>
-  select(application_type, in_date, planning_district, c_of_a_descision) |>
   filter(grepl("approved|refused|approval", c_of_a_descision,
-               ignore.case = TRUE)) |>
-  mutate(c_of_a_descision = ifelse(
-    grepl("approved|approval", c_of_a_descision, ignore.case = TRUE),
-    1, 0
+    ignore.case = TRUE
   )) |>
-  rename(date = in_date,
-    decision = c_of_a_descision
+  mutate(
+    c_of_a_descision = ifelse(grepl("approved|approval",
+      c_of_a_descision,
+      ignore.case = TRUE
+    ),
+    1, 0
+    ),
+    year = year(in_date)
   ) |>
+  filter(year >= 2016) |>
+  rename(decision = c_of_a_descision) |>
+  select(application_type, year, planning_district, decision) |>
   tidyr::drop_na()
 
 #### Save data ####

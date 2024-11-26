@@ -33,10 +33,6 @@ application_type <- c("MV", "CO")
 # Decision types
 decision <- c(1, 0)
 
-# Set a date range
-start_date <- as.Date("2011-02-23")
-end_date <- as.Date("2024-10-22")
-
 # Create a dataset by randomly assigning states and parties to divisions
 simulated_data <- tibble(
   application_type = sample(
@@ -45,9 +41,9 @@ simulated_data <- tibble(
     replace = TRUE,
     prob = c(0.3, 0.7) # Rough distribution
   ),
-  date = as.Date(sample(seq(start_date, end_date, by = "day"), 500,
+  year = sample(seq(2016, 2024), 500,
     replace = TRUE
-  )),
+  ),
   planning_district = sample(
     planning_district,
     size = 500,

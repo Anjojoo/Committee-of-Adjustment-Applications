@@ -23,13 +23,14 @@ analysis_data <- read_csv("data/02-analysis_data/analysis_data.csv")
 analysis_data <- analysis_data %>%
   mutate(
     application_type = as.factor(application_type),
+    year = as.factor(year),
     planning_district = as.factor(planning_district)
   )
 
 #### Model data ####
 first_model <- 
   stan_glm(
-    formula = decision ~ application_type + date + planning_district,
+    formula = decision ~ application_type + year + planning_district,
     data = analysis_data,
     family = binomial(link = "logit"), # Logistic regression
     prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
