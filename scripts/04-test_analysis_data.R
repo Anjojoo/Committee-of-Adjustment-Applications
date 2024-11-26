@@ -1,69 +1,108 @@
 #### Preamble ####
-# Purpose: Tests... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 26 September 2024 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Tests the structure and validity of the cleaned Adjusted
+# Application Committee dataset.
+# Author: Angel Xu
+# Date: 22 November 2024
+# Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites:
+# - The `The `tidyverse`, `arrow`, `lintr`, `styler`, `here` packages
+# must be installed and loaded.
+# - 02-download_data.R and 03-clean_data.R must have been run
+# Any other information needed? None
 
 
 #### Workspace setup ####
 library(tidyverse)
-library(testthat)
+library(arrow)
+library(lintr)
+library(styler)
+library(here)
 
-data <- read_csv("data/02-analysis_data/analysis_data.csv")
+analysis_data <- read_parquet("data/02-analysis_data/analysis_data.parquet")
 
 
 #### Test data ####
-# Test that the dataset has 151 rows - there are 151 divisions in Australia
-test_that("dataset has 151 rows", {
-  expect_equal(nrow(analysis_data), 151)
-})
 
-# Test that the dataset has 3 columns
-test_that("dataset has 3 columns", {
-  expect_equal(ncol(analysis_data), 3)
-})
+# Check if there are any missing values in the dataset
+if (all(!is.na(analysis_data))) {
+  message("Test Passed: The dataset contains no missing values.")
+} else {
+  stop("Test Failed: The dataset contains missing values.")
+}
 
-# Test that the 'division' column is character type
-test_that("'division' is character", {
-  expect_type(analysis_data$division, "character")
-})
 
-# Test that the 'party' column is character type
-test_that("'party' is character", {
-  expect_type(analysis_data$party, "character")
-})
+# Check whether all required columns are present
+check_required_columns <- function(data, required_columns) {
+  if (!all(required_columns %in% colnames(data))) {
+    stop("Error: Some required columns are missing.")
+  } else {
+    message("Check passed: All required columns are present.")
+  }
+}
 
-# Test that the 'state' column is character type
-test_that("'state' is character", {
-  expect_type(analysis_data$state, "character")
-})
+# Check if each column has the correct data type
+check_column_types <- function(data) {
+  if (!is.Date(as.Date(data$date))) stop("Error: 'date' column must be in Date format.")
+  if (!is.character(data$application_type)) stop("Error: 'application_type' column must be character.")
+  if (!is.character(data$planning_district)) stop("Error: 'planning_district' column must be character.")
+  if (!is.character(data$decision)) stop("Error: 'decision' column must be character.")
+  message("Check passed: All columns have the correct format.")
+}
 
-# Test that there are no missing values in the dataset
-test_that("no missing values in dataset", {
-  expect_true(all(!is.na(analysis_data)))
-})
+# Test if all 'date' values are between Feb 23, 2011, and Oct 22, 2024
+check_date_range <- function(data) {
+  if (!all(as.Date(data$date) >= as.Date("2011-02-23") & as.Date(data$date) <= as.Date("2024-10-22"))) {
+    stop("Error: 'date' column contains values outside the valid range (2011-02-23 to 20234-10-22).")
+  } else {
+    message("Check passed: All 'date' values are within the proper range.")
+  }
+}
 
-# Test that 'division' contains unique values (no duplicates)
-test_that("'division' column contains unique values", {
-  expect_equal(length(unique(analysis_data$division)), 151)
-})
+# Test if 'application_type' values are within the provided application types
+check_application_types <- function(data) {
+  valid_types <- c("MV", "CO")
+  if (!all(data$application_type %in% valid_types)) {
+    stop("Error: Invalid 'application_type' values found.")
+  } else {
+    message("Check passed: All 'application_type' values are valid.")
+  }
+}
 
-# Test that 'state' contains only valid Australian state or territory names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", "Western Australia", 
-                  "Tasmania", "Northern Territory", "Australian Capital Territory")
-test_that("'state' contains valid Australian state names", {
-  expect_true(all(analysis_data$state %in% valid_states))
-})
+# Test if 'planning_district' values are within the district list
+check_planning_districts <- function(data) {
+  valid_districts <- c("Etobicoke York", "North York", "Scarborough", "Toronto East York")
+  if (!all(data$planning_district %in% valid_districts)) {
+    stop("Error: Invalid 'planning_district' values found.")
+  } else {
+    message("Check passed: All 'planning_district' values are valid.")
+  }
+}
 
-# Test that there are no empty strings in 'division', 'party', or 'state' columns
-test_that("no empty strings in 'division', 'party', or 'state' columns", {
-  expect_false(any(analysis_data$division == "" | analysis_data$party == "" | analysis_data$state == ""))
-})
+# Test if 'decision' values are within the result list
+check_decision_values <- function(data) {
+  valid_decisions <- c("Approval", "Refused")
+  if (!all(data$decision %in% valid_decisions)) {
+    stop("Error: Invalid 'decision' values found.")
+  } else {
+    message("Check passed: All 'decision' values are valid.")
+  }
+}
 
-# Test that the 'party' column contains at least 2 unique values
-test_that("'party' column contains at least 2 unique values", {
-  expect_true(length(unique(analysis_data$party)) >= 2)
-})
+# Run all checks
+required_columns <- c("application_type", "date", "planning_district", "decision")
+check_required_columns(analysis_data, required_columns)
+check_column_types(analysis_data)
+check_date_range(analysis_data)
+check_application_types(analysis_data)
+check_planning_districts(analysis_data)
+check_decision_values(analysis_data)
+
+
+# If the script gets to this point without stopping, all tests passed
+print("All tests passed!")
+
+
+#### Lint and style the code ####
+lint(filename = here("scripts/04-test_analysis_data.R"))
+style_file(path = here("scripts/04-test_analysis_data.R"))

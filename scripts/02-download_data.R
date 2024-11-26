@@ -12,6 +12,9 @@
 library(opendatatoronto)
 library(tidyverse)
 library(dplyr)
+library(here)
+library(lintr)
+library(styler)
 
 #### Download data ####
 # get package
@@ -35,3 +38,6 @@ data
 write_csv(data, "data/01-raw_data/active_applications.csv") 
 
          
+#### Lint and style the code ####
+lint(filename = here("scripts/02-download_data.R"))
+style_file(path = here("scripts/02-download_data.R"))

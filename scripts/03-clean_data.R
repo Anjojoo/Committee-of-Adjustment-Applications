@@ -10,6 +10,7 @@
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
+library(arrow)
 
 #### Clean data ####
 # Read the raw data
@@ -27,7 +28,7 @@ cleaned_data <-
   mutate(c_of_a_descision = ifelse(
     grepl("approved|approval", c_of_a_descision, ignore.case = TRUE),
     "Approval",
-    "Refuse"
+    "Refused"
   )) |> 
   rename(date = in_date,
          decision = c_of_a_descision
@@ -35,4 +36,4 @@ cleaned_data <-
   tidyr::drop_na()
 
 #### Save data ####
-write_csv(cleaned_data, "data/02-analysis_data/analysis_data.csv")
+write_parquet(cleaned_data, "data/02-analysis_data/analysis_data.parquet")

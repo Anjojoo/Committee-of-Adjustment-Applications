@@ -1,89 +1,109 @@
 #### Preamble ####
-# Purpose: Tests the structure and validity of the simulated Australian 
-  #electoral divisions dataset.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: Tests the structure and validity of the simulated Adjusted
+# Application Committee dataset.
+# Author: Angel Xu
+# Date: 22 November 2024
+# Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
-  # - The `tidyverse` package must be installed and loaded
-  # - 00-simulate_data.R must have been run
-# Any other information needed? Make sure you are in the `starter_folder` rproj
+# Pre-requisites:
+# - The `The `tidyverse`, `arrow`, `lintr`, `styler`, `here` packages
+# must be installed and loaded.
+# - 00-simulate_data.R must have been run
+# Any other information needed? Make sure you are in the
+# `Committee_of_Adjustment_Applications` rproj
 
 
 #### Workspace setup ####
 library(tidyverse)
+library(arrow)
+library(lintr)
+library(styler)
+library(here)
 
-analysis_data <- read_csv("data/00-simulated_data/simulated_data.csv")
-
-# Test if the data was successfully loaded
-if (exists("analysis_data")) {
-  message("Test Passed: The dataset was successfully loaded.")
-} else {
-  stop("Test Failed: The dataset could not be loaded.")
-}
+simulated_data <- read_parquet("data/00-simulated_data/simulated_data.parquet")
 
 
 #### Test data ####
 
-# Check if the dataset has 151 rows
-if (nrow(analysis_data) == 151) {
-  message("Test Passed: The dataset has 151 rows.")
-} else {
-  stop("Test Failed: The dataset does not have 151 rows.")
-}
-
-# Check if the dataset has 3 columns
-if (ncol(analysis_data) == 3) {
-  message("Test Passed: The dataset has 3 columns.")
-} else {
-  stop("Test Failed: The dataset does not have 3 columns.")
-}
-
-# Check if all values in the 'division' column are unique
-if (n_distinct(analysis_data$division) == nrow(analysis_data)) {
-  message("Test Passed: All values in 'division' are unique.")
-} else {
-  stop("Test Failed: The 'division' column contains duplicate values.")
-}
-
-# Check if the 'state' column contains only valid Australian state names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", 
-                  "Western Australia", "Tasmania", "Northern Territory", 
-                  "Australian Capital Territory")
-
-if (all(analysis_data$state %in% valid_states)) {
-  message("Test Passed: The 'state' column contains only valid Australian state names.")
-} else {
-  stop("Test Failed: The 'state' column contains invalid state names.")
-}
-
-# Check if the 'party' column contains only valid party names
-valid_parties <- c("Labor", "Liberal", "Greens", "National", "Other")
-
-if (all(analysis_data$party %in% valid_parties)) {
-  message("Test Passed: The 'party' column contains only valid party names.")
-} else {
-  stop("Test Failed: The 'party' column contains invalid party names.")
-}
-
 # Check if there are any missing values in the dataset
-if (all(!is.na(analysis_data))) {
+if (all(!is.na(simulated_data))) {
   message("Test Passed: The dataset contains no missing values.")
 } else {
   stop("Test Failed: The dataset contains missing values.")
 }
 
-# Check if there are no empty strings in 'division', 'state', and 'party' columns
-if (all(analysis_data$division != "" & analysis_data$state != "" & analysis_data$party != "")) {
-  message("Test Passed: There are no empty strings in 'division', 'state', or 'party'.")
-} else {
-  stop("Test Failed: There are empty strings in one or more columns.")
+
+# Check whether all required columns are present
+check_required_columns <- function(data, required_columns) {
+  if (!all(required_columns %in% colnames(data))) {
+    stop("Error: Some required columns are missing.")
+  } else {
+    message("Check passed: All required columns are present.")
+  }
 }
 
-# Check if the 'party' column has at least two unique values
-if (n_distinct(analysis_data$party) >= 2) {
-  message("Test Passed: The 'party' column contains at least two unique values.")
-} else {
-  stop("Test Failed: The 'party' column contains less than two unique values.")
+# Check if each column has the correct data type
+check_column_types <- function(data) {
+  if (!is.Date(as.Date(data$date))) stop("Error: 'date' column must be in Date format.")
+  if (!is.character(data$application_type)) stop("Error: 'application_type' column must be character.")
+  if (!is.character(data$planning_district)) stop("Error: 'planning_district' column must be character.")
+  if (!is.character(data$decision)) stop("Error: 'decision' column must be character.")
+  message("Check passed: All columns have the correct format.")
 }
+
+# Test if all 'date' values are between Feb 23, 2011, and Oct 22, 2024
+check_date_range <- function(data) {
+  if (!all(as.Date(data$date) >= as.Date("2011-02-23") & as.Date(data$date) <= as.Date("2024-10-22"))) {
+    stop("Error: 'date' column contains values outside the valid range (2011-02-23 to 20234-10-22).")
+  } else {
+    message("Check passed: All 'date' values are within the proper range.")
+  }
+}
+
+# Test if 'application_type' values are within the provided application types
+check_application_types <- function(data) {
+  valid_types <- c("MV", "CO")
+  if (!all(data$application_type %in% valid_types)) {
+    stop("Error: Invalid 'application_type' values found.")
+  } else {
+    message("Check passed: All 'application_type' values are valid.")
+  }
+}
+
+# Test if 'planning_district' values are within the district list
+check_planning_districts <- function(data) {
+  valid_districts <- c("Etobicoke York", "North York", "Scarborough", "Toronto East York")
+  if (!all(data$planning_district %in% valid_districts)) {
+    stop("Error: Invalid 'planning_district' values found.")
+  } else {
+    message("Check passed: All 'planning_district' values are valid.")
+  }
+}
+
+# Test if 'decision' values are within the result list
+check_decision_values <- function(data) {
+  valid_decisions <- c("Approval", "Refused")
+  if (!all(data$decision %in% valid_decisions)) {
+    stop("Error: Invalid 'decision' values found.")
+  } else {
+    message("Check passed: All 'decision' values are valid.")
+  }
+}
+
+# Run all checks
+required_columns <- c("application_type", "date", "planning_district", "decision")
+check_required_columns(simulated_data, required_columns)
+check_column_types(simulated_data)
+check_date_range(simulated_data)
+check_application_types(simulated_data)
+check_planning_districts(simulated_data)
+check_decision_values(simulated_data)
+
+
+# If the script gets to this point without stopping, all tests passed
+print("All tests passed!")
+
+
+#### Lint and style the code ####
+lint(filename = here("scripts/01-test_simulated_data.R"))
+style_file(path = here("scripts/01-test_simulated_data.R"))
