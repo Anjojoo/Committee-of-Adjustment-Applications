@@ -1,4 +1,4 @@
-# Starter folder
+# Toronto's Committee of Adjustment Application Approval
 
 ## Overview
 
