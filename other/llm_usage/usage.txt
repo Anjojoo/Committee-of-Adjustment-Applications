@@ -79,3 +79,55 @@ bibtex
 }
 Replace the Accessed date with the actual date you accessed the dataset if it differs.
 
+There's no % after the percentage number, how to write the code to show it.
+ChatGPT 说：
+ChatGPT
+To add a % symbol after the percentage numbers in the kable table, you can modify the Percentage column to include the % symbol as a string. Here's the updated R code:
+
+R
+复制代码
+#### Workspace setup ####
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+#### Read data ####
+analysis_data <- read_csv("data/analysis_data.csv")
+
+#### Generate summary statistics for `decision` ####
+decision_summary <- analysis_data %>%
+  group_by(decision) %>%
+  summarize(
+    Count = n(),
+    Percentage = paste0(round((n() / nrow(analysis_data)) * 100, 1), "%") # Add '%' symbol
+  ) %>%
+  mutate(Decision = ifelse(decision == 1, "Approved (1)", "Refused (0)")) %>%
+  select(Decision, Count, Percentage)
+
+#### Create a kable table ####
+decision_summary %>%
+  kable(
+    format = "html", 
+    col.names = c("Decision", "Count", "Percentage"),
+    caption = "Summary Statistics for Decision Variable"
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed")
+  )
+Explanation of Changes:
+Add % Symbol:
+
+The Percentage column is modified using paste0() to concatenate the rounded percentage value with the % symbol.
+Rounded Values:
+
+The percentages are rounded to one decimal place for clarity using round().
+Output:
+
+The table now displays percentages with a % symbol appended.
+Example Output:
+Decision	Count	Percentage
+Refused (0)	607	33.5%
+Approved (1)	1207	66.5%
+This will display the % symbol in the table. Let me know if you have further questions!
+

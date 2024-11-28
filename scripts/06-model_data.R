@@ -1,11 +1,11 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Bayesian Logisitic Regression Model
+# Author: Angel Xu
+# Date: 23 November 2024
+# Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: run 01-dowload_data.R and 03-clean_data.R to get the dataset
+# Any other information needed? None
 
 
 #### Workspace setup ####
