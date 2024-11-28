@@ -131,3 +131,59 @@ Refused (0)	607	33.5%
 Approved (1)	1207	66.5%
 This will display the % symbol in the table. Let me know if you have further questions!
 
+can you provide a r code to calculate the rmse for this model
+ChatGPT 说：
+ChatGPT
+Here is the R code to calculate the RMSE for your Bayesian logistic regression model:
+
+R Code for RMSE Calculation
+R
+复制代码
+#### Workspace setup ####
+library(tidyverse)
+library(rstanarm)
+library(Metrics) # For RMSE calculation
+
+#### Read data ####
+analysis_data <- read_csv("data/analysis_data.csv")
+
+#### Fit Bayesian logistic regression model ####
+model <- stan_glm(
+  formula = decision ~ application_type + year + planning_district,
+  data = analysis_data,
+  family = binomial(link = "logit"),
+  prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
+  prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
+  seed = 1234
+)
+
+#### Generate predictions ####
+# Predicted probabilities
+predicted_probabilities <- posterior_predict(model, draws = 1) %>% 
+  as.vector()
+
+# RMSE Calculation
+rmse_value <- rmse(analysis_data$decision, predicted_probabilities)
+
+#### Print RMSE ####
+print(paste("RMSE:", rmse_value))
+Explanation of the Code:
+Model Fitting:
+
+A Bayesian logistic regression model is fit using stan_glm() with the specified predictors.
+Predicted Probabilities:
+
+Use posterior_predict() to generate predicted probabilities for each observation from the posterior distribution.
+RMSE Calculation:
+
+The rmse() function from the Metrics package calculates the Root Mean Square Error based on the observed binary outcomes (decision) and the predicted probabilities.
+Output:
+
+The RMSE value is printed to evaluate how well the model’s predicted probabilities align with the observed outcomes.
+Requirements:
+Install the Metrics package if it’s not already installed:
+R
+复制代码
+install.packages("Metrics")
+This code provides a straightforward method to calculate the RMSE for your Bayesian logistic regression model. Let me know if you encounter any issues or need further assistance!
+

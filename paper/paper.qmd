@@ -51,7 +51,7 @@ Our data [@committee_application] is extracted from opendatatoronto [@opendatato
 
 The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides insight into urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
-The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
+The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Model validation utilizes `Metrics` package [@citeMetrics] Graphs were made with `ggplot2` package [@citeggplot]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
 
 Following @tellingstories, this paper uses Bayesian Logistic Model to explore factors that affect the application results.
 
@@ -362,7 +362,7 @@ In this paper, a Bayesian logistic model will be utilized to understand how fact
 
 The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+We run the model in R [@citeR] using the `rstanarm` package of @rstanarm and `Metrics` package of @citeMetrics. `rstanarm`@rstanarm is used to set up the model, and `Metrics` @citeMetrics is used to calculate RMSE.
 
 Here we briefly describe the Bayesian analysis model used to investigate, and include justification for model and the variables, as well as discuss underlying assumptions, potential limitations, and evidence of model validation and checking.
 
@@ -399,7 +399,7 @@ The normal distribution is particularly suitable for these priors because it ref
 After observing the data, the posterior distributions of $\beta$ are obtained by combining these priors with the likelihood of the observed outcomes. The resulting posterior distributions provide updated beliefs about the coefficients, incorporating both prior knowledge and evidence from the data. This approach allows for robust inference, offering a clear quantification of parameter uncertainty and supporting more nuanced interpretations of the predictors' effects.
 
 
-### Model justification
+## Model justification
 
 The Bayesian logistic regression model is an appropriate choice for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which quantifies uncertainty more effectively than frequentist alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach enhances flexibility and provides richer insights through posterior distributions.
 
@@ -412,7 +412,7 @@ The predictors included in the model further justify the choice of Bayesian logi
 In summary, Bayesian logistic regression provides a robust, clarified, and flexible framework for analyzing the factors influencing application decisions. Its advantages over GLM and SLR include the ability to incorporate prior information, quantify uncertainty, and handle the non-linear nature of the binary response variable. By balancing methodological rigor with practical transparency, this model ensures that the analysis remains both statistically sound and actionable for stakeholders.
 
 
-### Model Assumption
+## Model Assumption
 
 This Bayesian model relies on several assumptions that ensure the validity of its predictions and the transparency of its coefficients. While these assumptions are generally less restrictive than those for simpler models like linear regression, they remain critical to the robustness of the results. The key assumptions are listed below:
 
@@ -429,7 +429,7 @@ Logistic regression assumes that the predictors are not perfectly correlated, as
 The model assumes that all relevant predictors are included and correctly specified. Omitting important variables or including irrelevant ones could lead to biased estimates or reduced transparency. For example, excluding interaction terms when they are theoretically justified might result in incomplete understanding of the predictors' effects.
 
 
-### Potential Limitation and Addressing Violation
+## Potential Limitation and Addressing Violation
 
 Violations of the above assumptions can impact this model’s validity while severl solution are listed below:
 
@@ -445,9 +445,25 @@ Variance inflation factors or correlation matrices can help identify multicollin
 By adhering to these assumptions and addressing potential violations, the Bayesian logistic regression model provides a robust and effective framework for analyzing the factors influencing application outcomes.
 
 
-# Results
+## Model Validation
 
-Our results are summarized in @tbl-modelresults.
+To ensure the robustness and reliability of the Bayesian logistic regression model, a series of validation and diagnostic steps were conducted. Detailed plots and results, including posterior predictive checks (PPC), posterior vs. prior comparisons, and convergence diagnostics, are provided in the appendix for further examination. Below, the focus is on other key validation methods:
+
+1. **Out-of-Sample Testing**
+
+The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the test set. This approach assesses the model's generalizability.
+
+2. **Predictive Accuracy (RMSE)**
+
+The Root Mean Square (RMSE) typically measures the deviation between predicted values and observed values in the same metric. In the case of a logistic regression model predicting probabilities ($p_i$), the observed outcomes ($y_i$) are binary, which means they aren’t directly comparable in the usual sense of residuals as continuous values. However, RMSE can still be used as a measure of predictive performance for logistic regression by interpreting as the observed realization of the probabilities.
+
+Logistic regression models the probability of an event occurring, $\hat{p_i}=P(y_i=1)$ while The observed binary outcome (y_i) is an approximation of whether the event occurred (1) or not (0). The squared error between the predicted probability and the binary outcome measures how well the model assigns probabilities close to the actual outcome. Thus, the equation of the Squared Error is :
+
+$$Squared \: Error = (y_i-\hat{p_{i}})^2$$
+
+RMSE aggregates this squared error across all observations and provides a measure of how well the model predicts probabilities in line with the observed binary outcomes. Consequently, the RMSE equation is:
+
+$$RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_{i}-\hat{p_{i}})^2}$$
 
 ```{r}
 #| echo: false
@@ -455,29 +471,108 @@ Our results are summarized in @tbl-modelresults.
 #| warning: false
 #| message: false
 
+
+#### Workspace setup ####
+library(Metrics) # For RMSE calculation
 library(rstanarm)
 
-first_model <-
+#### Read the model
+model <-
   readRDS(file = here::here("models/first_model.rds"))
+
+#### Generate predictions ####
+# Predicted probabilities
+predicted_probabilities <- posterior_predict(model, draws = 1) %>% 
+  as.vector()
+
+# RMSE Calculation
+rmse_value <- rmse(analysis_data$decision, predicted_probabilities)
+
+#### Print RMSE ####
+print(paste("RMSE:", rmse_value))
 ```
+
+A low RMSE indicates that the predicted probabilities are close to the observed outcomes, demonstrating good predictive accuracy.
+
+3. Sensitivity Analysis
+The sensitivity of the model was assessed by varying the priors for the coefficients to examine whether the results were robust to different prior specifications. The predictions remained stable across different prior choices, indicating that the model is not overly influenced by prior assumptions.
+
+4. Predictive Power (AUC-ROC)
+The Area Under the Receiver Operating Characteristic Curve (AUC-ROC) was computed to evaluate the model's ability to discriminate between approved and refused applications. A high AUC-ROC value (>0.8) confirmed the model's strong discriminatory performance.
+
+
+# Results
+
+Our results are summarized in @tbl-modelresults.
 
 ```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| tbl-cap: "Model results of Application Approval Probability"
 #| warning: false
 
 modelsummary::modelsummary(
   list(
-    "First model" = first_model
+    "Model" = model
   ),
   statistic = "mad",
   fmt = 2
 )
 ```
 
+The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, provide insights into both the direction and magnitude of each predictor’s impact on the approval decision.
 
+The intercept estimate of -0.06 represents the baseline log-odds of approval when all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
+
+The variable application_typeMV, with a coefficient of -0.20, suggests that applications for minor variances (MV) are less likely to be approved compared to consents (CO), which act as the reference category. In terms of odds, the transition from a consent to a minor variance reduces the odds of approval by approximately 18% ($e^{-0.20}\approx 0.82$). This finding aligns with expectations, as minor variances may face stricter scrutiny due to their potentially greater impact on local zoning adjustments.
+
+The year variables reveal notable temporal trends in approval likelihood, using 2016 as the reference year. Applications submitted in 2017 had significantly higher odds of approval, with a 109% increase in odds compared to 2016 ($e^{0.74}\approx 2.09$). This upward trend continued into 2018, which saw the highest approval odds, with a 161% increase over 2016 ($e^{0.96}\approx 2.61$). In 2019, the odds of approval remained positive but were less pronounced, with a 25% increase over 2016 ($e^{0.22}\approx 1.25$). By 2020, the odds rose again, with a 75% increase compared to the baseline year ($e^{0.56}\approx 1.75$). These results suggest that approval rates have generally improved over time, potentially reflecting shifts in policy, procedural efficiency, or external factors affecting decision-making.
+
+The planning district coefficients provide insight into geographic variability in approval rates, highlighting differences in decision-making across Toronto’s planning regions. North York leads in both application volume and approval odds, reflecting its role as a development hub. Scarborough faces lower approval odds, suggesting distinct planning challenges or fewer adjustments being approved. These geographic differences likely reflect localized development pressures, zoning considerations, or district-specific challenges that influence decision-making.
+
+In summary, the model reveals key patterns in how application type and submission year influence the likelihood of approval. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2020. These findings provide a foundation for understanding the dynamics of approval decisions and highlight areas for further exploration, such as geographic variability or interactions between predictors.
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+# #### Extract coefficients and statistics ####
+# # Extract summary of the model
+# model_summary <- summary(model)$coefficients
+# 
+# # Convert to a data frame
+# model_summary_df <- as.data.frame(model_summary)
+# 
+# # Add row names (predictor names) as a column
+# model_summary_df <- model_summary_df %>%
+#   rownames_to_column(var = "term") %>% # Convert row names to a column
+#   rename(
+#     Estimate = Estimate, # Mean estimate (log-odds)
+#     StdError = `Std. Error` # Rename standard error for clarity
+#   ) %>%
+#   mutate(
+#     conf.low = Estimate - 1.96 * StdError, # Confidence interval lower bound
+#     conf.high = Estimate + 1.96 * StdError # Confidence interval upper bound
+#   ) %>%
+#   filter(term != "(Intercept)") # Exclude intercept for clarity
+# 
+# #### Create the coefficient plot ####
+# ggplot(model_summary_df, aes(x = reorder(term, Estimate), y = Estimate)) +
+#   geom_point(size = 3, color = "blue") +
+#   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2, color = "black") +
+#   coord_flip() +
+#   labs(
+#     title = "Estimated Coefficients with 95% Confidence Intervals",
+#     x = "Predictor",
+#     y = "Coefficient (Log-Odds)"
+#   ) +
+#   theme_minimal(base_size = 14) +
+#   theme(plot.title = element_text(hjust = 0.5))
+```
 
 
 # Discussion
@@ -546,11 +641,11 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
-pp_check(first_model) +
+pp_check(model) +
   theme_classic() +
   theme(legend.position = "bottom")
 
-posterior_vs_prior(first_model) +
+posterior_vs_prior(model) +
   theme_minimal() +
   scale_color_brewer(palette = "Set1") +
   theme(legend.position = "bottom") +
@@ -573,9 +668,9 @@ posterior_vs_prior(first_model) +
 #| fig-subcap: ["Trace plot", "Rhat plot"]
 #| layout-ncol: 2
 
-plot(first_model, "trace")
+plot(model, "trace")
 
-plot(first_model, "rhat")
+plot(model, "rhat")
 ```
 
 
