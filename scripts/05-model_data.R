@@ -28,7 +28,7 @@ analysis_data <- analysis_data %>%
   )
 
 #### Model data ####
-first_model <- 
+first_model <-
   stan_glm(
     formula = decision ~ application_type + year + planning_district,
     data = analysis_data,
@@ -47,5 +47,5 @@ saveRDS(
 
 
 #### Lint and style the code ####
-lint(filename = here("scripts/00-simulate_data.R"))
-style_file(path = here("scripts/00-simulate_data.R"))
+lint(filename = here("scripts/05-model_data.R"))
+style_file(path = here("scripts/05-model_data.R"))

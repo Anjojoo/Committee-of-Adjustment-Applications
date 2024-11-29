@@ -1,6 +1,6 @@
 ---
-title: "Understanding Factors Contributing to Application Approval in Urban Planning Decisions"
-subtitle: "Analysis using data from Toronto’s Committee of Adjustment applications leveraging Bayesian Logistic Regression"
+title: "Understanding Factors Contributing to Application Approval in Urban Planning Decisions (2016-2024)"
+subtitle: "Analysis using data from Toronto’s Committee of Adjustment applications using Bayesian Logistic Regression"
 author: Angel Xu
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
@@ -51,7 +51,7 @@ Our data [@committee_application] is extracted from opendatatoronto [@opendatato
 
 The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides insight into urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
-The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Model validation utilizes `Metrics` package [@citeMetrics] Graphs were made with `ggplot2` package [@citeggplot]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
+The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
 
 Following @tellingstories, this paper uses Bayesian Logistic Model to explore factors that affect the application results.
 
@@ -362,7 +362,7 @@ In this paper, a Bayesian logistic model will be utilized to understand how fact
 
 The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm and `Metrics` package of @citeMetrics. `rstanarm`@rstanarm is used to set up the model, and `Metrics` @citeMetrics is used to calculate RMSE.
+We run the model in R [@citeR] using the `rstanarm` package of @citerstanarm. `rstanarm`@citerstanarm is used to set up the model.
 
 Here we briefly describe the Bayesian analysis model used to investigate, and include justification for model and the variables, as well as discuss underlying assumptions, potential limitations, and evidence of model validation and checking.
 
@@ -453,46 +453,7 @@ To ensure the robustness and reliability of the Bayesian logistic regression mod
 
 The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the test set. This approach assesses the model's generalizability.
 
-2. **Predictive Accuracy (RMSE)**
-
-The Root Mean Square (RMSE) typically measures the deviation between predicted values and observed values in the same metric. In the case of a logistic regression model predicting probabilities ($p_i$), the observed outcomes ($y_i$) are binary, which means they aren’t directly comparable in the usual sense of residuals as continuous values. However, RMSE can still be used as a measure of predictive performance for logistic regression by interpreting as the observed realization of the probabilities.
-
-Logistic regression models the probability of an event occurring, $\hat{p_i}=P(y_i=1)$ while The observed binary outcome (y_i) is an approximation of whether the event occurred (1) or not (0). The squared error between the predicted probability and the binary outcome measures how well the model assigns probabilities close to the actual outcome. Thus, the equation of the Squared Error is :
-
-$$Squared \: Error = (y_i-\hat{p_{i}})^2$$
-
-RMSE aggregates this squared error across all observations and provides a measure of how well the model predicts probabilities in line with the observed binary outcomes. Consequently, the RMSE equation is:
-
-$$RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_{i}-\hat{p_{i}})^2}$$
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-
-#### Workspace setup ####
-library(Metrics) # For RMSE calculation
-library(rstanarm)
-
-#### Read the model
-model <-
-  readRDS(file = here::here("models/first_model.rds"))
-
-#### Generate predictions ####
-# Predicted probabilities
-predicted_probabilities <- posterior_predict(model, draws = 1) %>% 
-  as.vector()
-
-# RMSE Calculation
-rmse_value <- rmse(analysis_data$decision, predicted_probabilities)
-
-#### Print RMSE ####
-print(paste("RMSE:", rmse_value))
-```
-
-A low RMSE indicates that the predicted probabilities are close to the observed outcomes, demonstrating good predictive accuracy.
+2. Confusion Metrix
 
 3. Sensitivity Analysis
 The sensitivity of the model was assessed by varying the priors for the coefficients to examine whether the results were robust to different prior specifications. The predictions remained stable across different prior choices, indicating that the model is not overly influenced by prior assumptions.
@@ -508,9 +469,24 @@ Our results are summarized in @tbl-modelresults.
 ```{r}
 #| echo: false
 #| eval: true
+#| warning: false
+#| message: false
+
+library(rstanarm)
+
+model <-
+  readRDS(file = here::here("models/first_model.rds"))
+```
+
+
+```{r}
+#| echo: false
+#| eval: true
 #| label: tbl-modelresults
 #| tbl-cap: "Model results of Application Approval Probability"
 #| warning: false
+
+model <- model
 
 modelsummary::modelsummary(
   list(
@@ -709,6 +685,28 @@ plot(model, "rhat")
 
 ## Surveys, Sampling, and Observational Data
 
+### Overview
+This appendix delves into the methodological considerations underlying the data used in this paper, focusing on the challenges and intricacies of observational data, the implications of sampling, and the potential use of surveys and simulations to enrich insights.
+
+### Methodology
+
+### Sampling Approach
+
+#### Target Population
+
+
+#### Sampling Frame
+
+
+
+#### Trade-offs
+
+
+
+### Idealized Methodology
+
+
+### Survey
 
 
 
