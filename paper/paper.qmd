@@ -41,6 +41,7 @@ Telegraphing paragraph: The remainder of this paper is structured as follows. @s
 
 ## Estimand
 
+This study aims to estimate the factors influencing the approval decisions for urban planning applications in Toronto. By analyzing variables such as the type of application (minor variance or consent), the year of submission, and the planning district, this study seeks to understand how these elements shape the decision-making process. The primary objective is to determine the causal effects of these factors on approval outcomes, thereby offering insights into the dynamics of urban planning and regulatory processes. 
 
 
 # Data {#sec-data}
