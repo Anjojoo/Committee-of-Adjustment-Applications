@@ -51,7 +51,7 @@ Our data [@committee_application] is extracted from opendatatoronto [@opendatato
 
 The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides insight into urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
-The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
+The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot] and `tidybayes` package [@citetidybayes]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
 
 Following @tellingstories, this paper uses Bayesian Logistic Model to explore factors that affect the application results.
 
@@ -362,7 +362,7 @@ In this paper, a Bayesian logistic model will be utilized to understand how fact
 
 The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
 
-We run the model in R [@citeR] using the `rstanarm` package of @citerstanarm. `rstanarm`@citerstanarm is used to set up the model.
+We run the model in R [@citeR] using the `rstanarm` package of @citerstanarm. `rstanarm` [@citerstanarm] is used to set up the model.`tidybayes` package [@citetidybayes] is used to plot predicted probabilities in for result analysis.
 
 Here we briefly describe the Bayesian analysis model used to investigate, and include justification for model and the variables, as well as discuss underlying assumptions, potential limitations, and evidence of model validation and checking.
 
@@ -499,56 +499,111 @@ modelsummary::modelsummary(
 
 The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, provide insights into both the direction and magnitude of each predictor’s impact on the approval decision.
 
-The intercept estimate of -0.06 represents the baseline log-odds of approval when all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
+The intercept estimate of -0.06 represents the baseline (an application of CO subimited in 2016 at Etobicoke York) log-odds of approval when all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
 
 The variable application_typeMV, with a coefficient of -0.20, suggests that applications for minor variances (MV) are less likely to be approved compared to consents (CO), which act as the reference category. In terms of odds, the transition from a consent to a minor variance reduces the odds of approval by approximately 18% ($e^{-0.20}\approx 0.82$). This finding aligns with expectations, as minor variances may face stricter scrutiny due to their potentially greater impact on local zoning adjustments.
 
-The year variables reveal notable temporal trends in approval likelihood, using 2016 as the reference year. Applications submitted in 2017 had significantly higher odds of approval, with a 109% increase in odds compared to 2016 ($e^{0.74}\approx 2.09$). This upward trend continued into 2018, which saw the highest approval odds, with a 161% increase over 2016 ($e^{0.96}\approx 2.61$). In 2019, the odds of approval remained positive but were less pronounced, with a 25% increase over 2016 ($e^{0.22}\approx 1.25$). By 2020, the odds rose again, with a 75% increase compared to the baseline year ($e^{0.56}\approx 1.75$). These results suggest that approval rates have generally improved over time, potentially reflecting shifts in policy, procedural efficiency, or external factors affecting decision-making.
+The year variables reveal significant temporal variations in approval likelihood, using 2016 as the reference year. These coefficients highlight how approval dynamics have shifted over time. For instance, in 2017, the coefficient of 0.74 indicates a 109% increase in the odds of approval compared to 2016 ($e^{0.74} \approx 2.09$), which suggests a substantial policy or procedural shift. In 2018, the strongest positive effect is observed, with a coefficient of 0.96, reflecting a 161% increase in odds relative to 2016 ($e^{0.96} \approx 2.61$). However, in 2019, the coefficient drops to 0.22, representing a smaller increase of 25% in odds ($e^{0.22} \approx 1.25$), suggesting that this period may have faced stricter reviews or procedural adjustments. By 2020, the coefficient rebounds to 0.56, translating to a 75% increase in odds ($e^{0.56} \approx 1.75$).
 
-The planning district coefficients provide insight into geographic variability in approval rates, highlighting differences in decision-making across Toronto’s planning regions. North York leads in both application volume and approval odds, reflecting its role as a development hub. Scarborough faces lower approval odds, suggesting distinct planning challenges or fewer adjustments being approved. These geographic differences likely reflect localized development pressures, zoning considerations, or district-specific challenges that influence decision-making.
+For more recent years, 2021 sees a coefficient of 0.34, showing a 40% increase in odds ($e^{0.34} \approx 1.40$). In 2022, the coefficient is 0.28, reflecting a 32% increase ($e^{0.28} \approx 1.32$). In 2023, approvals surged again, with a coefficient of 0.99, representing a 170% increase in odds ($e^{0.99} \approx 2.69$). Finally, 2024 showed the highest increase, with a coefficient of 1.24, translating to a 245% increase in approval odds compared to the baseline year of 2016 ($e^{1.24} \approx 3.46$). This steady upward trend reflects systemic improvements in the approval process, possibly due to increased efficiency, evolving zoning policies, or external influences favoring development.
+
+The model captures geographic variability in approval rates across Toronto’s planning districts. North York, with a coefficient of 0.41, shows a 50% increase in odds compared to the baseline district ($e^{0.41} \approx 1.50$), highlighting its role as a development hub and its alignment with urban growth priorities. Scarborough, on the other hand, has the lowest approval likelihood, with a coefficient of 0.16, indicating a modest 17% increase in odds ($e^{0.16} \approx 1.17$), suggesting challenges related to stricter zoning rules or community resistance to changes. Toronto East York has a coefficient of 0.33, showing a 39% increase in odds ($e^{0.33} \approx 1.39$), reflecting its mix of heritage preservation and urban development priorities. The results emphasize that approval rates vary significantly across districts due to localized zoning policies, development pressures, and socio-political factors influencing decision-making.
 
 In summary, the model reveals key patterns in how application type and submission year influence the likelihood of approval. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2020. These findings provide a foundation for understanding the dynamics of approval decisions and highlight areas for further exploration, such as geographic variability or interactions between predictors.
 
 
 ```{r}
+#| label: fig-pp-type
+#| fig-cap: Predicted Probability of Approval by Application Type
 #| echo: false
-#| eval: true
 #| warning: false
 #| message: false
 
-# #### Extract coefficients and statistics ####
-# # Extract summary of the model
-# model_summary <- summary(model)$coefficients
-# 
-# # Convert to a data frame
-# model_summary_df <- as.data.frame(model_summary)
-# 
-# # Add row names (predictor names) as a column
-# model_summary_df <- model_summary_df %>%
-#   rownames_to_column(var = "term") %>% # Convert row names to a column
-#   rename(
-#     Estimate = Estimate, # Mean estimate (log-odds)
-#     StdError = `Std. Error` # Rename standard error for clarity
-#   ) %>%
-#   mutate(
-#     conf.low = Estimate - 1.96 * StdError, # Confidence interval lower bound
-#     conf.high = Estimate + 1.96 * StdError # Confidence interval upper bound
-#   ) %>%
-#   filter(term != "(Intercept)") # Exclude intercept for clarity
-# 
-# #### Create the coefficient plot ####
-# ggplot(model_summary_df, aes(x = reorder(term, Estimate), y = Estimate)) +
-#   geom_point(size = 3, color = "blue") +
-#   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2, color = "black") +
-#   coord_flip() +
-#   labs(
-#     title = "Estimated Coefficients with 95% Confidence Intervals",
-#     x = "Predictor",
-#     y = "Coefficient (Log-Odds)"
-#   ) +
-#   theme_minimal(base_size = 14) +
-#   theme(plot.title = element_text(hjust = 0.5))
+# Load required libraries
+library(tidybayes)
+
+# Clean analysis_data to drop unused levels
+new_data <- analysis_data %>%
+  mutate(
+    application_type = factor(application_type),
+    year = factor(year),
+    planning_district = factor(planning_district)
+  )
+
+# Generate prediction data without creating NAs
+predict_data <- expand_grid(
+  application_type = levels(new_data$application_type),
+  year = levels(new_data$year),
+  planning_district = levels(new_data$planning_district)
+)
+
+# Generate predicted probabilities
+posterior_probs <- posterior_epred(model, newdata = predict_data)
+
+# Transpose posterior_probs to match predict_data
+posterior_probs_t <- t(posterior_probs)
+
+# Check dimensions for consistency
+if (nrow(predict_data) != nrow(posterior_probs_t)) {
+  stop("Dimension mismatch between predict_data and posterior_probs.")
+}
+
+# Convert predictions to long format for boxplots
+predict_data_long <- predict_data %>%
+  mutate(row_id = row_number()) %>%
+  bind_cols(as_tibble(posterior_probs_t)) %>%
+  pivot_longer(cols = starts_with("V"), names_to = "sample", values_to = "prob")
+
+# Plot boxplot for application type
+ggplot(predict_data_long, aes(x = application_type, y = prob)) +
+  geom_boxplot() +
+  labs(
+    x = "Application Type",
+    y = "Predicted Probability of Approval"
+  ) +
+  theme_minimal()
+
 ```
+
+@fig-pp-type demonstrates variability in the predicted probability of approval between consent applications (CO) and minor variances (MV). Consent applications exhibit a slightly higher median predicted probability of approval compared to minor variances. The interquartile range (IQR) for both application types is comparable, indicating a similar spread of probabilities. However, minor variance applications show a broader lower whisker, suggesting that certain cases have substantially lower probabilities of approval. This supports the interpretation that minor variances may face stricter scrutiny due to their greater potential impact on zoning.
+
+```{r}
+#| label: fig-pp-year
+#| fig-cap: Predicted Probability of Approval by Year
+#| echo: false
+#| warning: false
+#| message: false
+
+# Generate predicted probabilities for year
+ggplot(predict_data_long, aes(x = year, y = prob)) +
+  geom_boxplot() +
+  labs(
+    x = "Year",
+    y = "Predicted Probability of Approval"
+  ) +
+  theme_minimal()
+```
+
+@fig-pp-year explores temporal trends in the predicted probability of approval from 2016 to 2024. The median predicted probability of approval rises steadily from 2016 to 2024. While 2016 exhibits the lowest probabilities, years such as 2018 and 2024 display higher medians, indicating increased approval likelihood in recent years. Variability within years remains relatively stable, with slight fluctuations in the spread across the interquartile range. This pattern aligns with findings from the regression analysis, where temporal predictors indicated a gradual improvement in approval rates over time. This likely reflects policy or procedural changes that have positively influenced the decision-making process.
+
+```{r}
+#| label: fig-pp-district
+#| fig-cap: Predicted Probability of Approval by Planning District
+#| echo: false
+#| warning: false
+#| message: false
+
+# Generate predicted probabilities for planning district
+ggplot(predict_data_long, aes(x = planning_district, y = prob)) +
+  geom_boxplot() +
+  labs(
+    x = "Planning District",
+    y = "Predicted Probability of Approval"
+  ) +
+  theme_minimal()
+```
+
+@fig-pp-district evaluates geographic variability in approval probabilities across the four planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. North York consistently shows the highest median predicted probability of approval, reaffirming its status as a development hub with favorable zoning outcomes. In contrast, Scarborough exhibits the lowest median and a wider spread of probabilities, with outliers indicating challenging cases. Toronto East York and Etobicoke York present intermediate medians, suggesting more balanced approval probabilities in these regions. These geographic differences highlight the influence of localized development dynamics and zoning considerations on approval outcomes.
 
 
 # Discussion
@@ -646,7 +701,7 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| message: false
 #| warning: false
 #| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
+#| layout-ncol: 1
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
 #| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
 
@@ -675,7 +730,7 @@ posterior_vs_prior(model) +
 #| label: fig-stanareyouokay
 #| fig-cap: "Checking the convergence of the MCMC algorithm"
 #| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| layout-ncol: 1
 
 plot(model, "trace")
 
@@ -683,31 +738,249 @@ plot(model, "rhat")
 ```
 
 
-## Surveys, Sampling, and Observational Data
+## Idealized Methodology and Survey
 
 ### Overview
-This appendix delves into the methodological considerations underlying the data used in this paper, focusing on the challenges and intricacies of observational data, the implications of sampling, and the potential use of surveys and simulations to enrich insights.
-
-### Methodology
+This section outlines an idealized methodology and survey design to supplement the observational dataset used in this study. The objective is to enhance the analysis of urban planning decisions by incorporating a carefully designed survey targeting key stakeholders in Toronto's zoning and land-use processes.
 
 ### Sampling Approach
 
 #### Target Population
+The target population comprises stakeholders involved in the Committee of Adjustment's decision-making process, including:
 
+- **Property Owners and Developers**: Individuals or entities who submit applications for minor variances or consents.
+- **Urban Planners and Architects**: Professionals who prepare applications or advise clients on zoning requirements.
+- **Committee Members and Staff**: Officials responsible for evaluating applications and making decisions.
+- **Community Members**: Residents who may provide feedback during public hearings.
 
 #### Sampling Frame
+The sampling frame would be constructed using publicly available application records and contact information from municipal directories. This ensures representation from all planning districts and captures diverse perspectives across geographic and professional domains.
 
+#### Sample Size
+Using stratified random sampling, the sample size would aim for approximately 3000 respondents, ensuring statistical validity while considering feasibility.
 
+#### Stratified Random Sampling
+Stratified random sampling enhances the accuracy of survey estimates because it ensures proportional representation of different demographic groups. This minimizes the risk of sampling bias, where certain groups may be overrepresented or underrepresented, skewing the results.
+
+Hence, to achieve a representative sample, stratified random sampling will be employed. This method involves dividing the population into homogeneous subgroups based on key demographic characteristics, then randomly selecting samples from each stratum proportionate to its size in the population. The strata will include:
+
+- Application types: Categorize applicants based on the purpose of their submission. (Minor Variance and Consent)
+- Planning districts: Stratify by Toronto's four major planning districts to capture geographic diversity. (North York, Scarborough, Toronto East York, and Etobicoke York)
+- Applicant roles: Group participants by their involvement in the application process. (Individual Property Owners, Developers, and Consultants)
+
+Within these strata, respondents will be randomly selected to align with the distribution of these categories in the broader population. The process begins by grouping the population into strata defined by characteristics such as application type, planning district, and applicant role. Afterward, random samples are drawn independently from each subgroup, ensuring proportional representation. In cases where smaller groups are critical to the study, adjustments can be made to ensure adequate representation. Finally, the selected samples from each subgroup are combined to create the overall sample, ensuring that all significant categories are included.
+
+This method reduces sampling variability, enhances representation, and provides more accurate estimates compared to simple random sampling, as the unique characteristics of each subgroup are reflected in the final sample.
 
 #### Trade-offs
+While stratified random sampling ensures proportional representation and enhances the precision of survey estimates, it is not without challenges. One notable trade-off is the complexity involved in defining and managing multiple strata, particularly when the strata are based on multiple dimensions such as application type, planning district, and applicant role. This complexity increases the time and resources required for sample design and execution. For instance, ensuring proportional representation across strata like **Scarborough developers** or **North York consultants** may necessitate oversampling in smaller groups, leading to additional effort in recruitment and logistical coordination.
+
+Another trade-off lies in the potential for overstratification, which can result in small sample sizes within certain strata. If some strata, such as **Scarborough Consent applications**, have very few members, it may be difficult to draw statistically meaningful conclusions. This could necessitate adjustments, such as combining smaller strata or applying post-stratification weighting, which could introduce bias or reduce interpretability. Additionally, the method assumes that the characteristics used to define strata are adequately known and relevant, which may not account for unobserved variables that influence the outcomes, such as the socio-political environment or project complexity. Despite these challenges, the benefits of stratified random sampling in terms of improved accuracy and subgroup analysis make it a robust choice for this study.
 
 
+### Data Validation
+Survey responses would be validated through cross-referencing with the cleaned dataset. For instance:
 
-### Idealized Methodology
+Matching survey-reported outcomes with recorded decisions.
+Verifying consistency between applicant-reported application details and dataset attributes (e.g., application type, planning district).
+To ensure representativeness, response rates would be monitored, and additional recruitment efforts would target underrepresented groups or districts.
+
 
 
 ### Survey
 
+This survey will be conducted using Google Forms, which is an effective platform for data
+collection. The survey can be accessed by the link, [Google Form Survey](https://forms.gle/SVyeccgCSsjhQzWX7).
+
+#### Survey Structure
+
+**Title:**
+
+Understanding Urban Planning Decisions
+
+**Introduction:**
+
+I appreciate your participation in this survey, which seeks to better understand the factors influencing urban planning decisions and application outcomes in Toronto. Your responses are crucial for enhancing the research and contributing to insights that could inform future urban planning processes.
+
+**Please note:**
+
+- Your answers will be treated with complete confidentiality.
+- Participation in this survey is voluntary.
+- You are encouraged to provide honest and thoughtful responses.
+- The survey is estimated to take about 5 minutes to complete.
+- If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
+
+Thank you for your valuable contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
+
+**Section 1: Application Details**
+
+What type of application did you submit?
+
+- MV (Minor Variance)
+
+- CO (Consent)
+
+- Prefer not to say
+
+Which planning district was your application associated with?
+
+- North York
+
+- Scarborough
+
+- Etobicoke York
+
+- Toronto East York
+
+- Prefer not to say
+
+Which year did you submit your application?
+
+- 2016
+
+- 2017
+
+- 2018
+
+- 2019
+
+- 2020
+
+- 2021
+
+- 2022
+
+- 2023
+
+- 2024
+
+- Other (please specify)
+
+What was the outcome of your application?
+
+- Approved
+
+- Refused
+
+- Prefer not to say
+
+- Others (please specify)
+
+**Section 2: Applicant Background**
+
+What role best describes your involvement in the application process?
+
+- Property Owner
+
+- Developer
+
+- Consultant
+
+- Prefer not to say
+
+- Others (please specify)
+
+How many years of experience do you have in urban planning or related fields?
+
+- <1 year
+
+- 1–5 years
+
+- 5–10 years
+
+- >10 years
+
+- Prefer not to say
+
+**Section 3: Process and Challenges**
+
+What was the primary purpose of your application?
+
+- Residential Adjustment
+
+- Commercial Development
+
+- Mixed-Use Development
+
+- Prefer not to say
+
+- Others (please specify)
+
+What challenges did you encounter during the application process?
+
+- Zoning Compliance
+
+- Documentation Requirements
+
+- Public Objections
+
+- Prefer not to say
+
+- Others (please specify)
+
+**Section 4: Influences on Decisions**
+
+Do you believe community feedback impacted the outcome of your application?
+
+- Yes
+
+- No
+
+Were there any external factors (e.g., economic conditions, policy changes) that influenced the decision?
+
+- Yes
+
+- No
+
+Do you have any further comments or insights about the factors that might affect the application decision?
+
+[answer box]
+
+**Section 5: Feedback and Improvements**
+
+What improvements would you recommend for the application process?
+
+- Streamlining Documentation
+
+- Clearer Guidelines
+
+- Enhanced Community Engagement
+
+- Others (please specify)
+
+Do you have any further comments or insights about the application process?
+
+d[answer box]
+
+**End Message:**
+Thank You for Completing the Survey!
+
+We sincerely appreciate your time and thoughtful responses. Your participation is essential in helping us gain a deeper understanding of the factors influencing urban planning decisions in Toronto. Your insights will contribute to research aimed at improving zoning application processes and understanding decision dynamics.
+
+If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
+
+As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your valuable contribution!
+
+
+### Surevey Design Consideration
+
+When designing the survey, several key factors were considered to ensure representativeness, clarity, and relevance to the study's objectives. The survey targets individuals involved in Toronto’s urban planning processes, including property owners, developers, and consultants.
+
+Question phrasing was tailored to align with terminology familiar to the target respondents, minimizing ambiguity. Efforts were also made to limit the survey's length to encourage participation while ensuring sufficient data for meaningful analysis. A balance was struck between closed-ended questions, which facilitate quantitative analysis, and open-ended questions, which capture nuanced qualitative insights. Additionally, the survey design accounted for ethical considerations, such as maintaining confidentiality and emphasizing voluntary participation.
+
+
+### Strength
+
+The survey design has several strengths. Stratified random sampling ensures that the results are representative of the population, reducing sampling bias. By aligning strata with key demographic and process variables, the survey facilitates detailed subgroup analysis, enhancing the depth of insights. The inclusion of both quantitative and qualitative questions allows for an overall understanding of the factors influencing urban planning decisions. Closed-ended questions enable statistical analysis, while open-ended responses provide richer context and identify factors not captured in the observational dataset.
+
+The survey also addresses gaps in the cleaned dataset, such as perceptions of community feedback, challenges during the application process, and external influences on decisions. These insights complement the quantitative data, offering a more holistic view of the decision-making process.
+
+
+### Weakness
+
+Despite its strengths, the survey has some limitations. Stratified random sampling requires precise knowledge of the population's composition, which may not always be accurate, particularly for less-documented strata. Smaller strata, such as applications from certain districts or less common applicant roles, may result in small sample sizes, limiting statistical power. Additionally, reliance on self-reported data introduces the potential for response bias, as participants may overstate or understate certain factors, particularly regarding the impact of community feedback or external influences.
+
+The survey's limited length, while improving completion rates, may constrain the depth of responses, especially for complex topics. Furthermore, the survey results are context-specific, reflecting Toronto’s unique regulatory framework and urban planning dynamics, which may limit the generalizability of findings to other cities or contexts. Despite these challenges, the survey is a valuable tool for supplementing the dataset and addressing research objectives.
 
 
 \newpage
