@@ -34,7 +34,9 @@ This paper examines the factors influencing approval decisions for planning appl
 
 The findings indicate that consents are more likely to be approved than minor variances, reflecting differences in the scrutiny applied to these application types. Approval rates show notable temporal trends, with the highest approval likelihood observed in 2018, where odds of approval were 161% higher compared to the baseline year of 2016. Significant increases are also evident in 2017 and 2020, with approval rates showing consistent improvement over time, despite some fluctuations. Additionally, geographic disparities are evident, with North York exhibiting the highest approval probabilities, while Scarborough demonstrates lower likelihoods, potentially due to district-specific planning challenges. The difference in approval rates across Toronto’s planning districts suggests localized factors influence decision-making. These results enhance understanding of the approval process and highlight areas where decision-making could become more consistent and equitable.
 
-The remainder of this paper is structured as follows. @sec-data introduces the overview of the data (@sec-data-overview), measurement (@sec-data-measurement), data cleaning process (@sec-data-cleaning), data features (@sec-data-feature), as well as explanations, descriptions, table and graph summaries of outcome (@sec-data-outcome) and predictor variables (@sec-data-predictor) of the study. @sec-model explains the modeling process in detail, including procedure of model set-up, model justifications, model assumptions, and potential limitations. Then, @sec-result highlights the prediction outcome and results by model summary and plots. Finally, @sec-dis includes discussions based on the results, linking it to the real world and also states some strengths and weakness of the study. 
+This study is important because it addresses an area of urban development that has direct implications for policy-making and planning efficiency. By analyzing approval patterns, the research helps clarify how procedural factors, geographic contexts, and temporal variations affect outcomes, providing a deeper understanding of the mechanisms at work in planning decisions. This understanding is essential for fostering accountability and ensuring that urban growth aligns with community needs and regulatory frameworks. The findings also serve as a foundation for improving processes and reducing inconsistencies, contributing to more equitable and transparent urban governance.
+
+The remainder of this paper is structured as follows. @sec-data introduces the overview of the data (@sec-data-overview), measurement (@sec-data-measurement), data cleaning process (@sec-data-cleaning), data features (@sec-data-feature), as well as explanations, descriptions, table and graph summaries of outcome (@sec-data-outcome) and predictor variables (@sec-data-predictor) of the study. @sec-model explains the modeling process in detail, including procedure of model set-up, model justifications, model assumptions, and potential limitations. Then, @sec-result highlights the prediction outcome and results by model summary and plots. Finally, @sec-dis includes discussions based on the results, linking it to the real world and also states some weakness of the study. 
 
 
 ## Estimand
@@ -63,9 +65,13 @@ Consequently, focusing on the Committee of Adjustment Applications dataset [@com
 	
 The dataset captures information on applications submitted to the City of Toronto’s Committee of Adjustment, providing a structured record of decisions made on zoning variances and consents. The dataset’s structure results from Toronto’s well-defined application process. When property owners or developers submit applications to the Committee of Adjustment, they provide detailed information about their project, including its location, purpose, and the specific variances or consents requested. These details are reviewed by committee staff and entered into a digital database, ensuring consistency and standardization.
 
-Applications to the Committee of Adjustment are typically submitted by property owners, developers, or their authorized agents (e.g., architects or planners). Eligibility to submit an application requires ownership or legal rights to the property in question. For some application types, such as consents, additional prerequisites include demonstrating compliance with existing zoning bylaws or providing documentation showing that the proposed subdivision aligns with city planning objectives. Minor variance applications, on the other hand, require applicants to show that the requested adjustments are “minor” in nature, do not conflict with broader zoning intentions, and maintain compatibility with the surrounding area. As a result, individuals submitting these applications are often professionals with expertise in urban planning, real estate, or development, or property owners working in consultation with such professionals.
+Applications to the Committee of Adjustment are typically submitted by property owners, developers, or their authorized agents (e.g. architects or planners). Eligibility to submit an application requires ownership or legal rights to the property in question. There are two types of application, minor variance (MV) and consents (CO). Consent applications address land subdivision for developments or sales, while Minor Variance applications request small adjustments to zoning regulations like setbacks or height limits. For consent applications, additional prerequisites include demonstrating compliance with existing zoning bylaws or providing documentation showing that the proposed subdivision aligns with city planning objectives. Minor variance applications, on the other hand, require applicants to show that the requested adjustments are “minor” in nature, do not conflict with broader zoning intentions, and maintain compatibility with the surrounding area. As a result, individuals submitting these applications are often professionals with expertise in urban planning, real estate, or development, or property owners working in consultation with such professionals.
 
-The data collection process begins with property owners or developers submitting applications through a centralized system. Each application includes essential details, which are systematically verified and recorded by administrative staff. Following public hearings, committee decisions (approval or refusal) are added to the database, completing the data entry process. The dataset is then maintained and periodically published by the City of Toronto, ensuring it remains accessible and accurate for public and analytical use.
+Applications to the Committee of Adjustment can be submitted for properties located in one of Toronto’s defined planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. Each district represents a distinct geographic area within the city, characterized by varying levels of urban density, development patterns, and zoning requirements. The choice of district is determined by the location of the property for which the application is being made.
+
+For the submission year, the dataset captures applications over a range of years, reflecting historical patterns and trends in urban development. Applications from earlier years may correspond to a period of slower development or more stringent zoning regulations, while more recent submissions could align with economic growth, population increases, or shifts in city planning priorities. For instance, years coinciding with major municipal initiatives or economic booms may see spikes in application numbers. By including the year of submission, the dataset provides a temporal dimension that connects development trends to broader economic and policy contexts, such as changes in zoning laws or housing demand.
+
+The data collection process begins with property owners or developers submitting applications through a centralized system. Application based surveys are collected. Each application includes essential details, which are systematically verified and recorded by administrative staff. Following public hearings, committee decisions (approval or refusal) are added to the database, completing the data entry process. The dataset is then maintained and periodically published by the City of Toronto, ensuring it remains accessible and accurate for public and analytical use.
 
 The dataset thus provides a structured lens through which to examine urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the nuanced processes underlying urban development.
 
@@ -446,14 +452,38 @@ By adhering to these assumptions and addressing potential violations, the Bayesi
 
 ## Model Validation
 
-To ensure the robustness and reliability of the Bayesian logistic regression model, a series of validation and diagnostic steps were conducted. Detailed plots and results, including posterior predictive checks (PPC), posterior vs. prior comparisons, and convergence diagnostics, are provided in the appendix for further examination. Below, the focus is on other key validation methods:
+To ensure the robustness and reliability of the Bayesian logistic regression model, a series of validation and diagnostic steps were conducted. Detailed plots and results, including posterior predictive checks (PPC), posterior vs. prior comparisons, and convergence diagnostics, are provided in the appendix for further examination. Below, the focus is on key validation method of **out of sampling**:
 
-1. **Out-of-Sample Testing**
+The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the train set and test set. This approach assesses the model's generalizability.
 
-The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the test set. This approach assesses the model's generalizability.
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-accuracy
+#| tbl-cap: "Classification Accuracy for Model Validation"
+#| warning: false
 
-2. **Confusion Metrix**
-The confusion matrix was computed to evaluate the model's classification performance, providing measures such as accuracy, sensitivity, and specificity. This validation assesses the model's predictive capabilities and its performance in correctly classifying approval decisions.
+# Load the saved results
+accuracy_results <- readRDS(file = here::here("models/accuracy_results.rds"))
+
+# Extract the values
+accuracy_train <- accuracy_results$accuracy_train
+accuracy_test <- accuracy_results$accuracy_test
+
+#### Summary Statistics for Accuracy ####
+accuracy_summary <- tibble(
+  `Train Accuracy` = accuracy_train,
+  `Test Accuracy` = accuracy_test
+)
+
+#### Create a kable table ####
+accuracy_summary %>%
+  kable(
+    format = "html"
+  )
+```
+
+@tbl-accuracy presents the train and test accuracy. The model's training accuracy of 66.75% and test accuracy of 66.575% are quite close, indicating that the model generalizes reasonably well between the training and test datasets. However, the relatively low accuracy on both datasets suggests the presence of underfitting, where the model fails to capture the complexity of the data and adequately explain the variance in the outcomes. This could result from the model being too simplistic, with insufficient predictors or inadequate representation of the data's structure. Additionally, potential issues like noisy or unbalanced data, insufficient feature engineering, or a lack of higher-order interactions and non-linearities in the model could contribute to this underfitting.
 
 
 # Results{#sec-result}
@@ -622,7 +652,7 @@ While this paper provides insights into the factors influencing application appr
 The analysis relies solely on the dataset provided by the City of Toronto's Committee of Adjustment, which, while complete in its coverage of applications, lacks certain critical variables. Key contextual factors, such as community objections, project complexity, or the presence of political or economic pressures, are not captured. For instance, the dataset does not provide information about why certain applications are refused or approved beyond the recorded decision, limiting the ability to analyze qualitative or situational influences.
 
 2. **Methodological Constraints**
-The Bayesian logistic regression model assumes that the relationships between predictors and the outcome variable are additive and linear on the log-odds scale. This assumption may oversimplify real-world interactions between variables, such as how specific planning districts may interact with application types or temporal trends. Furthermore, the model does not fully account for potential multicollinearity among predictors, which could distort the estimated coefficients. While priors were carefully chosen, their influence on the results might vary with a different prior specification, introducing some degree of subjectivity into the analysis.
+The Bayesian logistic regression model assumes that the relationships between predictors and the outcome variable are additive and linear on the log-odds scale. This assumption may oversimplify real-world interactions between variables, such as how specific planning districts may interact with application types or temporal trends. The model's relatively low accuracy for both the training and test datasets suggests underfitting, indicating that it fails to capture the full complexity of the data and may not adequately explain the variance in outcomes. This limitation could stem from insufficient predictors, unaccounted non-linear relationships, or interactions among variables. Furthermore, the model does not fully account for potential multicollinearity among predictors, which could distort the estimated coefficients. While priors were carefully chosen, their influence on the results might vary with a different prior specification, introducing some degree of subjectivity into the analysis.
 
 3. **Simplified Representation of Approval Dynamics**
 The approval process involves a combination of bureaucratic procedures, stakeholder negotiations, and technical considerations that are not fully captured in this analysis. For example, public hearings, lobbying efforts, and input from local communities likely play a significant role in shaping decisions but are absent from the dataset. This simplification means that the model captures only part of the story, potentially overlooking nuanced dynamics in urban planning and governance.
@@ -732,14 +762,14 @@ plot(model, "rhat")
 ```
 
 
-## Idealized Methodology and Survey
+# Idealized Methodology and Survey
 
-### Overview
+## Overview
 This section outlines an idealized methodology and survey design to supplement the observational dataset used in this study. The objective is to enhance the analysis of urban planning decisions by incorporating a carefully designed survey targeting key stakeholders in Toronto's zoning and land-use processes.
 
-### Sampling Approach
+## Sampling Approach
 
-#### Target Population
+### Target Population
 The target population comprises stakeholders involved in the Committee of Adjustment's decision-making process, including:
 
 - **Property Owners and Developers**: Individuals or entities who submit applications for minor variances or consents.
@@ -747,13 +777,13 @@ The target population comprises stakeholders involved in the Committee of Adjust
 - **Committee Members and Staff**: Officials responsible for evaluating applications and making decisions.
 - **Community Members**: Residents who may provide feedback during public hearings.
 
-#### Sampling Frame
+### Sampling Frame
 The sampling frame would be constructed using publicly available application records and contact information from municipal directories. This ensures representation from all planning districts and captures diverse perspectives across geographic and professional domains.
 
-#### Sample Size
+### Sample Size
 Using stratified random sampling, the sample size would aim for approximately 3000 respondents, ensuring statistical validity while considering feasibility.
 
-#### Stratified Random Sampling
+### Stratified Random Sampling
 Stratified random sampling enhances the accuracy of survey estimates because it ensures proportional representation of different demographic groups. This minimizes the risk of sampling bias, where certain groups may be overrepresented or underrepresented, skewing the results.
 
 Hence, to achieve a representative sample, stratified random sampling will be employed. This method involves dividing the population into homogeneous subgroups based on key demographic characteristics, then randomly selecting samples from each stratum proportionate to its size in the population. The strata will include:
@@ -766,13 +796,13 @@ Within these strata, respondents will be randomly selected to align with the dis
 
 This method reduces sampling variability, enhances representation, and provides more accurate estimates compared to simple random sampling, as the unique characteristics of each subgroup are reflected in the final sample.
 
-#### Trade-offs
+### Trade-offs
 While stratified random sampling ensures proportional representation and enhances the precision of survey estimates, it is not without challenges. One notable trade-off is the complexity involved in defining and managing multiple strata, particularly when the strata are based on multiple dimensions such as application type, planning district, and applicant role. This complexity increases the time and resources required for sample design and execution. For instance, ensuring proportional representation across strata like **Scarborough developers** or **North York consultants** may necessitate oversampling in smaller groups, leading to additional effort in recruitment and logistical coordination.
 
 Another trade-off lies in the potential for overstratification, which can result in small sample sizes within certain strata. If some strata, such as **Scarborough Consent applications**, have very few members, it may be difficult to draw statistically meaningful conclusions. This could necessitate adjustments, such as combining smaller strata or applying post-stratification weighting, which could introduce bias or reduce interpretability. Additionally, the method assumes that the characteristics used to define strata are adequately known and relevant, which may not account for unobserved variables that influence the outcomes, such as the socio-political environment or project complexity. Despite these challenges, the benefits of stratified random sampling in terms of improved accuracy and subgroup analysis make it a robust choice for this study.
 
 
-### Data Validation
+## Data Validation
 Survey responses would be validated through cross-referencing with the cleaned dataset. For instance:
 
 Matching survey-reported outcomes with recorded decisions.
@@ -781,12 +811,12 @@ To ensure representativeness, response rates would be monitored, and additional 
 
 
 
-### Survey
+## Survey
 
 This survey will be conducted using Google Forms, which is an effective platform for data
 collection. The survey can be accessed by the link, [Google Form Survey](https://forms.gle/SVyeccgCSsjhQzWX7).
 
-#### Survey Structure
+### Survey Structure
 
 **Title:**
 
@@ -956,21 +986,21 @@ If you have any questions or would like to learn more about this study, please d
 As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your valuable contribution!
 
 
-### Surevey Design Consideration
+## Surevey Design Consideration
 
 When designing the survey, several key factors were considered to ensure representativeness, clarity, and relevance to the study's objectives. The survey targets individuals involved in Toronto’s urban planning processes, including property owners, developers, and consultants.
 
 Question phrasing was tailored to align with terminology familiar to the target respondents, minimizing ambiguity. Efforts were also made to limit the survey's length to encourage participation while ensuring sufficient data for meaningful analysis. A balance was struck between closed-ended questions, which facilitate quantitative analysis, and open-ended questions, which capture nuanced qualitative insights. Additionally, the survey design accounted for ethical considerations, such as maintaining confidentiality and emphasizing voluntary participation.
 
 
-### Strength
+## Strength
 
 The survey design has several strengths. Stratified random sampling ensures that the results are representative of the population, reducing sampling bias. By aligning strata with key demographic and process variables, the survey facilitates detailed subgroup analysis, enhancing the depth of insights. The inclusion of both quantitative and qualitative questions allows for an overall understanding of the factors influencing urban planning decisions. Closed-ended questions enable statistical analysis, while open-ended responses provide richer context and identify factors not captured in the observational dataset.
 
 The survey also addresses gaps in the cleaned dataset, such as perceptions of community feedback, challenges during the application process, and external influences on decisions. These insights complement the quantitative data, offering a more holistic view of the decision-making process.
 
 
-### Weakness
+## Weakness
 
 Despite its strengths, the survey has some limitations. Stratified random sampling requires precise knowledge of the population's composition, which may not always be accurate, particularly for less-documented strata. Smaller strata, such as applications from certain districts or less common applicant roles, may result in small sample sizes, limiting statistical power. Additionally, reliance on self-reported data introduces the potential for response bias, as participants may overstate or understate certain factors, particularly regarding the impact of community feedback or external influences.
 

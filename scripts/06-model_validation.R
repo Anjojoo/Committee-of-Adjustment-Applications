@@ -1,10 +1,11 @@
 #### Preamble ####
-# Purpose: Bayesian Logisitic Regression Model
+# Purpose: Bayesian Logisitic Regression Model Validation
 # Author: Angel Xu
-# Date: 23 November 2024
+# Date: 30 November 2024
 # Contact: anjojoo.xu@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: run 01-dowload_data.R, 03-clean_data.R to get the dataset
+# Pre-requisites: run 01-dowload_data.R, 03-clean_data.R, and 05-model_data
+# to get the dataset and the model
 # Any other information needed? None
 
 
@@ -12,6 +13,7 @@
 set.seed(853)
 library(dplyr)
 library(arrow)
+library(rstanarm)
 library(lintr)
 library(styler)
 library(here)
@@ -48,6 +50,10 @@ accuracy_test <- mean(predicted_class == test_data$decision)
 accuracy_train
 accuracy_test
 
+# Save accuracy_train and accuracy_test to an RDS file
+saveRDS(list(accuracy_train = accuracy_train, accuracy_test = accuracy_test),
+  file = "models/accuracy_results.rds"
+)
 
 #### Lint and style the code ####
 lint(filename = here("scripts/06-model_validation.R"))
