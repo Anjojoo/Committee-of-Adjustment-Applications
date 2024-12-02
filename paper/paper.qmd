@@ -5,7 +5,7 @@ author: Angel Xu
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper analyzes urban planning application approvals submitted to Toronto's Committee of Adjustment from 2016 to 2024, focusing on key predictors such as application type, submission year, and planning district using Bayesian logistic regression. The analysis shows that consents are more likely to be approved than minor variances, with approval rates generally increasing over time, particularly from 2017 onward, though fluctuations are observed in certain years. Geographic disparities were identified, with North York showing the highest likelihood of approval, while Scarborough faced stricter reviews. These findings enhance understanding of urban planning decision-making processes, offering insights into temporal trends, geographic variability, and areas for equitable policy adjustments."
 format: pdf
 toc: true
 number-sections: true
@@ -28,15 +28,13 @@ analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
 
 # Introduction
 
-Overview paragraph
+Urban planning decisions shape the development of cities, influencing how communities grow and adapt to changing social, economic, and environmental conditions. In Toronto, one of Canada’s largest and most diverse cities, the approval of planning applications directly impacts growth, housing availability, and community design. Despite the importance of this process, limited research has explored the specific factors that influence approval decisions, particularly for minor variances and consents. This lack of understanding presents challenges for creating equitable and effective policies that balance the needs of stakeholders while adhering to regulatory frameworks.
 
-Estimand paragraph
+This paper examines the factors influencing approval decisions for planning applications submitted to the Committee of Adjustment in Toronto between 2016 and 2024. By analyzing application type, year of submission, and planning district, this study identifies patterns and trends in approval rates. Using a statistical modeling approach, it investigates how administrative processes, policy changes, and regional differences affect these outcomes over time. This analysis addresses a gap in urban planning research, providing a systematic evaluation of the approval process and its determinants.
 
-Results paragraph
+The findings indicate that consents are more likely to be approved than minor variances, reflecting differences in the scrutiny applied to these application types. Approval rates show notable temporal trends, with the highest approval likelihood observed in 2018, where odds of approval were 161% higher compared to the baseline year of 2016. Significant increases are also evident in 2017 and 2020, with approval rates showing consistent improvement over time, despite some fluctuations. Additionally, geographic disparities are evident, with North York exhibiting the highest approval probabilities, while Scarborough demonstrates lower likelihoods, potentially due to district-specific planning challenges. The difference in approval rates across Toronto’s planning districts suggests localized factors influence decision-making. These results enhance understanding of the approval process and highlight areas where decision-making could become more consistent and equitable.
 
-Why it matters paragraph
-
-Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
+The remainder of this paper is structured as follows. @sec-data introduces the overview of the data (@sec-data-overview), measurement (@sec-data-measurement), data cleaning process (@sec-data-cleaning), data features (@sec-data-feature), as well as explanations, descriptions, table and graph summaries of outcome (@sec-data-outcome) and predictor variables (@sec-data-predictor) of the study. @sec-model explains the modeling process in detail, including procedure of model set-up, model justifications, model assumptions, and potential limitations. Then, @sec-result highlights the prediction outcome and results by model summary and plots. Finally, @sec-dis includes discussions based on the results, linking it to the real world and also states some strengths and weakness of the study. 
 
 
 ## Estimand
@@ -46,7 +44,7 @@ This study aims to estimate the factors influencing the approval decisions for u
 
 # Data {#sec-data}
 
-## Overview
+## Overview {#sec-data-overview}
 
 Our data [@committee_application] is extracted from opendatatoronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
 
@@ -61,7 +59,7 @@ Although several similar datasets with overlapping themes were considered but ul
 Consequently, focusing on the Committee of Adjustment Applications dataset [@committee_application] stands out for its granularity and relevance, enabling a focused analysis of approval trends and their influencing factors, which directly aligns with the study's goals.
 
 
-## Measurement
+## Measurement {#sec-data-measurement}
 	
 The dataset captures information on applications submitted to the City of Toronto’s Committee of Adjustment, providing a structured record of decisions made on zoning variances and consents. The dataset’s structure results from Toronto’s well-defined application process. When property owners or developers submit applications to the Committee of Adjustment, they provide detailed information about their project, including its location, purpose, and the specific variances or consents requested. These details are reviewed by committee staff and entered into a digital database, ensuring consistency and standardization.
 
@@ -72,7 +70,7 @@ The data collection process begins with property owners or developers submitting
 The dataset thus provides a structured lens through which to examine urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the nuanced processes underlying urban development.
 
 
-## Data Cleaning
+## Data Cleaning {#sec-data-cleaning}
 
 To ensure the dataset was suitable for analysis, several high-level cleaning steps were performed. First, unused decision outcomes were filtered out, retaining only applications that were explicitly approved or refused. The `decision` variable was then converted into a binary format, with `1` representing approvals and `0` representing refusals, simplifying its use in modeling.
 
@@ -81,7 +79,7 @@ A new variable, `year`, was constructed by extracting the year from the `in_date
 Additionally, key variables are selected out in cleaned dataset for convenience. More details will be explored in appendix.
 
 
-## Features
+## Features {#sec-data-feature}
 
 The dataset provides details of applications submitted to the Committee of Adjustment, focusing on key variables:
 
@@ -454,16 +452,11 @@ To ensure the robustness and reliability of the Bayesian logistic regression mod
 
 The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the test set. This approach assesses the model's generalizability.
 
-2. Confusion Metrix
-
-3. Sensitivity Analysis
-The sensitivity of the model was assessed by varying the priors for the coefficients to examine whether the results were robust to different prior specifications. The predictions remained stable across different prior choices, indicating that the model is not overly influenced by prior assumptions.
-
-4. Predictive Power (AUC-ROC)
-The Area Under the Receiver Operating Characteristic Curve (AUC-ROC) was computed to evaluate the model's ability to discriminate between approved and refused applications. A high AUC-ROC value (>0.8) confirmed the model's strong discriminatory performance.
+2. **Confusion Metrix**
+The confusion matrix was computed to evaluate the model's classification performance, providing measures such as accuracy, sensitivity, and specificity. This validation assesses the model's predictive capabilities and its performance in correctly classifying approval decisions.
 
 
-# Results
+# Results{#sec-result}
 
 Our results are summarized in @tbl-modelresults.
 
@@ -607,7 +600,7 @@ ggplot(predict_data_long, aes(x = planning_district, y = prob)) +
 @fig-pp-district evaluates geographic variability in approval probabilities across the four planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. North York consistently shows the highest median predicted probability of approval, reaffirming its status as a development hub with favorable zoning outcomes. In contrast, Scarborough exhibits the lowest median and a wider spread of probabilities, with outliers indicating challenging cases. Toronto East York and Etobicoke York present intermediate medians, suggesting more balanced approval probabilities in these regions. These geographic differences highlight the influence of localized development dynamics and zoning considerations on approval outcomes.
 
 
-# Discussion
+# Discussion{#sec-dis}
 
 ## Overview
 
