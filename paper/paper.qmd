@@ -5,7 +5,7 @@ author: Angel Xu
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
-abstract: "This paper analyzes urban planning application approvals submitted to Toronto's Committee of Adjustment from 2016 to 2024, focusing on key predictors such as application type, submission year, and planning district using Bayesian logistic regression. The analysis shows that consents are more likely to be approved than minor variances, with approval rates generally increasing over time, particularly from 2017 onward, though fluctuations are observed in certain years. Geographic disparities were identified, with North York showing the highest likelihood of approval, while Scarborough faced stricter reviews. These findings enhance understanding of urban planning decision-making processes, offering insights into temporal trends, geographic variability, and areas for equitable policy adjustments."
+abstract: "This paper analyzes urban planning application approvals submitted to Toronto's Committee of Adjustment from 2016 to 2024, focusing on key predictors such as application type, submission year, and planning district using Bayesian logistic regression. The analysis shows that consents are more likely to be approved than minor variances, with approval rates generally increasing over time, particularly from 2017 onward, though fluctuations are observed in certain years. Geographic disparities were identified, with North York showing the highest likelihood of approval, while Scarborough faced stricter reviews. These findings enhance understanding of urban planning decision-making processes, offering perceptions into temporal trends, geographic variability, and areas for equitable policy adjustments."
 format: pdf
 toc: true
 number-sections: true
@@ -41,7 +41,7 @@ The remainder of this paper is structured as follows. @sec-data introduces the o
 
 ## Estimand
 
-This study aims to estimate the factors influencing the approval decisions for urban planning applications in Toronto. By analyzing variables such as the type of application (minor variance or consent), the year of submission, and the planning district, this study seeks to understand how these elements shape the decision-making process. The primary objective is to determine the causal effects of these factors on approval outcomes, thereby offering insights into the dynamics of urban planning and regulatory processes. 
+This study aims to estimate the factors influencing the approval decisions for urban planning applications in Toronto. By analyzing variables such as the type of application (minor variance or consent), the year of submission, and the planning district, this study seeks to understand how these elements shape the decision-making process. The primary objective is to determine the causal effects of these factors on approval outcomes, thereby offering perceptions into the dynamics of urban planning and regulatory processes. 
 
 
 # Data {#sec-data}
@@ -50,7 +50,7 @@ This study aims to estimate the factors influencing the approval decisions for u
 
 Our data [@committee_application] is extracted from opendatatoronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
 
-The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides insight into urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
+The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides awareness of urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
 The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot] and `tidybayes` package [@citetidybayes]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
 
@@ -73,7 +73,7 @@ For the submission year, the dataset captures applications over a range of years
 
 The data collection process begins with property owners or developers submitting applications through a centralized system. Application based surveys are collected. Each application includes essential details, which are systematically verified and recorded by administrative staff. Following public hearings, committee decisions (approval or refusal) are added to the database, completing the data entry process. The dataset is then maintained and periodically published by the City of Toronto, ensuring it remains accessible and accurate for public and analytical use.
 
-The dataset thus provides a structured lens through which to examine urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the nuanced processes underlying urban development.
+The dataset thus provides a structured lens through which to examine urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the detailed processes underlying urban development.
 
 
 ## Data Cleaning {#sec-data-cleaning}
@@ -129,11 +129,12 @@ library(ggplot2)
 #### Plot the distribution of `decision` ####
 ggplot(analysis_data, aes(x = factor(decision))) +
   geom_bar(fill = "lightblue", color = "black") +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -1.0) +
   labs(
     x = "Decision (0 = Refused, 1 = Approved)",
     y = "Count"
   ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16),
@@ -194,11 +195,12 @@ These categories represent distinct regulatory processes, with Consents generall
 #### Plot the distribution of `application_type` ####
 ggplot(analysis_data, aes(x = factor(application_type))) +
   geom_bar(fill = "lightgreen", color = "black") +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -1.0) +
   labs(
     x = "Application Type",
     y = "Count"
   ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) +
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16),
@@ -243,7 +245,7 @@ The relationship between application_type and the outcome variable decision will
 
 ### Year
 
-The year variable represents the year of submission for each application in the dataset. It provides insight into temporal trends in applications submitted to the Committee of Adjustment. This variable is instrumental in identifying changes in the volume of applications over time, which may reflect policy shifts, urban development trends, or external factors like economic conditions.
+The year variable represents the year of submission for each application in the dataset. It provides awareness into temporal trends in applications submitted to the Committee of Adjustment. This variable is instrumental in identifying changes in the volume of applications over time, which may reflect policy shifts, urban development trends, or external factors like economic conditions.
 
 ```{r}
 #| label: fig-year
@@ -255,11 +257,12 @@ The year variable represents the year of submission for each application in the 
 #### Plot the distribution of `year` ####
 ggplot(analysis_data, aes(x = factor(year))) +
   geom_bar(fill = "skyblue", color = "black") +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.8) + # Move labels higher
   labs(
     x = "Year",
     y = "Count"
   ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) + # Add extra space above bars
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16),
@@ -296,12 +299,12 @@ year_summary %>%
 
 @tbl-year states how each year contributes to the total volume of applications.
 
-The year variable is likely related to the decision outcome and application type. As approval rates may have varied over time due to changing city planning policies or committee priorities. Besides, temporal trends may reveal shifts in the proportion of Minor Variances (MV) versus Consents (CO), reflecting evolving development demands.
+The year variable is likely related to the decision outcome and application type. As approval rates may have varied over time due to changing city planning policies or committee priorities. Besides, temporal trends may highlight shifts in the proportion of Minor Variances (MV) versus Consents (CO), reflecting evolving development demands.
 
 
 ### Planning District
 
-The planning district variable identifies the geographic district within Toronto where an application was submitted. The city is divided into four planning districts, each with its own development characteristics and zoning regulations. These districts are crucial for understanding spatial trends in application submissions and outcomes, as local policies and priorities can influence decision-making processes.
+The planning district variable identifies the geographic district within Toronto where an application was submitted. The city is divided into four planning districts, each with its own development characteristics and zoning regulations. These districts are pivotal for understanding spatial trends in application submissions and outcomes, as local policies and priorities can influence decision-making processes.
 
 ```{r}
 #| label: fig-district
@@ -313,18 +316,19 @@ The planning district variable identifies the geographic district within Toronto
 #### Plot the distribution of `planning_district` ####
 ggplot(analysis_data, aes(x = factor(planning_district))) +
   geom_bar(fill = "coral", color = "black") +
-  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -1.0) + # Move labels higher
   labs(
     x = "Planning District",
     y = "Count"
   ) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) + # Add extra space above bars
   theme_minimal() +
   theme(
     plot.title = element_text(hjust = 0.5, size = 16),
     axis.title.x = element_text(size = 14),
     axis.title.y = element_text(size = 14),
     axis.text = element_text(size = 12),
-    axis.text.x = element_text(angle = 45, hjust = 1)
+    axis.text.x = element_text(angle = 45, hjust = 1) # Rotate x-axis text
   )
 ```
 
@@ -397,12 +401,12 @@ In the above Bayesian logistic regression model, the coefficients $\beta = {\bet
 
 The normal distribution is particularly suitable for these priors because it reflects a belief that most effects are likely to be small or moderate, centered around zero, while allowing for deviations in either direction. The standard deviation of 2.5 is a practical choice for weakly informative priors, offering a balance between constraining the parameters and allowing the data to influence the estimates. This ensures that the model avoids overfitting, particularly when data is sparse or multicollinearity exists among predictors.
 
-After observing the data, the posterior distributions of $\beta$ are obtained by combining these priors with the likelihood of the observed outcomes. The resulting posterior distributions provide updated beliefs about the coefficients, incorporating both prior knowledge and evidence from the data. This approach allows for robust inference, offering a clear quantification of parameter uncertainty and supporting more nuanced interpretations of the predictors' effects.
+After observing the data, the posterior distributions of $\beta$ are obtained by combining these priors with the likelihood of the observed outcomes. The resulting posterior distributions provide updated beliefs about the coefficients, incorporating both prior knowledge and evidence from the data. This approach allows for robust inference, offering a clear quantification of parameter uncertainty and supporting more detailed interpretations of the predictors' effects.
 
 
 ## Model justification
 
-The Bayesian logistic regression model is an appropriate choice for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which quantifies uncertainty more effectively than frequentist alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach enhances flexibility and provides richer insights through posterior distributions.
+The Bayesian logistic regression model is an appropriate choice for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which quantifies uncertainty more effectively than frequentist alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach enhances flexibility and provides richer revelations through posterior distributions.
 
 Compared to traditional generalized linear models (GLM), the Bayesian approach allows for the inclusion of prior beliefs through weakly informative priors ($N(0, 2.5)$) for all coefficients. These priors help stabilize the model, particularly in cases where data is sparse or multicollinear, without overwhelming the contribution of the observed data. Additionally, Bayesian methods yield full posterior distributions rather than single-point estimates, allowing for a clearer understanding of parameter uncertainty and a better capacity to incorporate uncertainty into decision-making processes. These advantages make the Bayesian logistic regression model preferable to a standard GLM, which provides point estimates and relies on asymptotic approximations for inference.
 
@@ -417,7 +421,7 @@ In summary, Bayesian logistic regression provides a robust, clarified, and flexi
 
 ## Model Assumption
 
-This Bayesian model relies on several assumptions that ensure the validity of its predictions and the transparency of its coefficients. While these assumptions are generally less restrictive than those for simpler models like linear regression, they remain critical to the robustness of the results. The key assumptions are listed below:
+This Bayesian model relies on several assumptions that ensure the validity of its predictions and the transparency of its coefficients. While these assumptions are generally less restrictive than those for simpler models like linear regression, they remain important to the robustness of the results. The key assumptions are listed below:
 
 1. Binary Response Variable
 The model assumes that the response variable ($y$) is binary, taking values of either 1 (approval) or 0 (refused). This assumption aligns with the nature of the data, as application decisions are dichotomous outcomes. Any deviations from binary coding would invalidate the logistic framework and require alternative modeling approaches.
@@ -519,19 +523,19 @@ modelsummary::modelsummary(
 )
 ```
 
-The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, provide insights into both the direction and magnitude of each predictor’s impact on the approval decision.
+The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, provide observations into both the direction and magnitude of each predictor’s impact on the approval decision.
 
 The intercept estimate of -0.06 represents the baseline (an application of CO subimited in 2016 at Etobicoke York) log-odds of approval when all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
 
 The variable application_typeMV, with a coefficient of -0.20, suggests that applications for minor variances (MV) are less likely to be approved compared to consents (CO), which act as the reference category. In terms of odds, the transition from a consent to a minor variance reduces the odds of approval by approximately 18% ($e^{-0.20}\approx 0.82$). This finding aligns with expectations, as minor variances may face stricter scrutiny due to their potentially greater impact on local zoning adjustments.
 
-The year variables reveal significant temporal variations in approval likelihood, using 2016 as the reference year. These coefficients highlight how approval dynamics have shifted over time. For instance, in 2017, the coefficient of 0.74 indicates a 109% increase in the odds of approval compared to 2016 ($e^{0.74} \approx 2.09$), which suggests a substantial policy or procedural shift. In 2018, the strongest positive effect is observed, with a coefficient of 0.96, reflecting a 161% increase in odds relative to 2016 ($e^{0.96} \approx 2.61$). However, in 2019, the coefficient drops to 0.22, representing a smaller increase of 25% in odds ($e^{0.22} \approx 1.25$), suggesting that this period may have faced stricter reviews or procedural adjustments. By 2020, the coefficient rebounds to 0.56, translating to a 75% increase in odds ($e^{0.56} \approx 1.75$).
+The year variables display significant temporal variations in approval likelihood, using 2016 as the reference year. These coefficients highlight how approval dynamics have shifted over time. For instance, in 2017, the coefficient of 0.74 indicates a 109% increase in the odds of approval compared to 2016 ($e^{0.74} \approx 2.09$), which suggests a substantial policy or procedural shift. In 2018, the strongest positive effect is observed, with a coefficient of 0.96, reflecting a 161% increase in odds relative to 2016 ($e^{0.96} \approx 2.61$). However, in 2019, the coefficient drops to 0.22, representing a smaller increase of 25% in odds ($e^{0.22} \approx 1.25$), suggesting that this period may have faced stricter reviews or procedural adjustments. By 2020, the coefficient rebounds to 0.56, translating to a 75% increase in odds ($e^{0.56} \approx 1.75$).
 
 For more recent years, 2021 sees a coefficient of 0.34, showing a 40% increase in odds ($e^{0.34} \approx 1.40$). In 2022, the coefficient is 0.28, reflecting a 32% increase ($e^{0.28} \approx 1.32$). In 2023, approvals surged again, with a coefficient of 0.99, representing a 170% increase in odds ($e^{0.99} \approx 2.69$). Finally, 2024 showed the highest increase, with a coefficient of 1.24, translating to a 245% increase in approval odds compared to the baseline year of 2016 ($e^{1.24} \approx 3.46$). This steady upward trend reflects systemic improvements in the approval process, possibly due to increased efficiency, evolving zoning policies, or external influences favoring development.
 
 The model captures geographic variability in approval rates across Toronto’s planning districts. North York, with a coefficient of 0.41, shows a 50% increase in odds compared to the baseline district ($e^{0.41} \approx 1.50$), highlighting its role as a development hub and its alignment with urban growth priorities. Scarborough, on the other hand, has the lowest approval likelihood, with a coefficient of 0.16, indicating a modest 17% increase in odds ($e^{0.16} \approx 1.17$), suggesting challenges related to stricter zoning rules or community resistance to changes. Toronto East York has a coefficient of 0.33, showing a 39% increase in odds ($e^{0.33} \approx 1.39$), reflecting its mix of heritage preservation and urban development priorities. The results emphasize that approval rates vary significantly across districts due to localized zoning policies, development pressures, and socio-political factors influencing decision-making.
 
-In summary, the model reveals key patterns in how application type and submission year influence the likelihood of approval. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2020. These findings provide a foundation for understanding the dynamics of approval decisions and highlight areas for further exploration, such as geographic variability or interactions between predictors.
+In summary, the model presents key patterns in how application type and submission year influence the likelihood of approval. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2020. These findings provide a foundation for understanding the dynamics of approval decisions and highlight areas for further investigation, such as geographic variability or interactions between predictors.
 
 
 ```{r}
@@ -631,28 +635,28 @@ ggplot(predict_data_long, aes(x = planning_district, y = prob)) +
 
 ## Overview
 
-This paper investigates the factors influencing application approvals submitted to the City of Toronto's Committee of Adjustment, using a Bayesian logistic regression model. By analyzing predictors such as application type, submission year, and planning district, the study provides insights into the dynamics of urban planning decisions. The model captures temporal trends, spatial variability, and procedural differences, offering a structured understanding of approval outcomes. Visualizations, including coefficient plots and effect plots, complement the analysis, helping to interpret the relationships between predictors and approval likelihood.
+This paper investigates the factors influencing application approvals submitted to the City of Toronto's Committee of Adjustment, using a Bayesian logistic regression model. By analyzing predictors such as application type, submission year, and planning district, the study provides findings into the dynamics of urban planning decisions. The model captures temporal trends, spatial variability, and procedural differences, offering a structured understanding of approval outcomes. Visualizations, including coefficient plots and effect plots, complement the analysis, helping to interpret the relationships between predictors and approval likelihood.
 
 ## Temporal Trends in Approval Rates
 
-One key finding is the temporal trend in approval rates. The analysis reveals that approval odds have increased steadily over time, peaking in 2018. This trend may reflect evolving planning policies, greater efficiency in committee processes, or a shift in zoning priorities. The data suggests that the Committee of Adjustment has become more permissive in granting approvals, which could indicate a growing alignment between applications and city planning objectives. This result highlights how administrative processes adapt over time to urban development needs.
+One key finding is the temporal trend in approval rates. The analysis exhibits that approval odds have increased steadily over time, peaking in 2018. This trend may reflect evolving planning policies, greater efficiency in committee processes, or a shift in zoning priorities. The data suggests that the Committee of Adjustment has become more permissive in granting approvals, which could indicate a growing alignment between applications and city planning objectives. This result highlights how administrative processes adapt over time to urban development needs.
 
 ## Geographic Disparities in Approval Decisions
 
-Spatial variability plays a significant role in application approvals. The findings show that North York consistently exhibits the highest approval rates, likely due to its prominence as a development hub with infrastructure supporting large-scale projects. Conversely, Scarborough has the lowest odds of approval, suggesting stricter zoning enforcement or less alignment with development objectives in this area. This geographic disparity underscores the influence of local contexts and priorities on urban planning decisions, revealing how different districts balance growth and zoning compliance.
+Spatial variability plays a significant role in application approvals. The findings show that North York consistently exhibits the highest approval rates, likely due to its prominence as a development hub with infrastructure supporting large-scale projects. Conversely, Scarborough has the lowest odds of approval, suggesting stricter zoning enforcement or less alignment with development objectives in this area. This geographic disparity underscores the influence of local contexts and priorities on urban planning decisions, manifesting how different districts balance growth and zoning compliance.
 
 ## Weaknesses
 
-While this paper provides insights into the factors influencing application approvals, there exists several limitations. These weaknesses cover data-related issues, methodological constraints, and broader contextual considerations.
+While this paper provides findings into the factors influencing application approvals, there exists several limitations. These weaknesses cover data-related issues, methodological constraints, and broader contextual considerations.
 
 1. **Data Limitations**
-The analysis relies solely on the dataset provided by the City of Toronto's Committee of Adjustment, which, while complete in its coverage of applications, lacks certain critical variables. Key contextual factors, such as community objections, project complexity, or the presence of political or economic pressures, are not captured. For instance, the dataset does not provide information about why certain applications are refused or approved beyond the recorded decision, limiting the ability to analyze qualitative or situational influences.
+The analysis relies solely on the dataset provided by the City of Toronto's Committee of Adjustment, which, while complete in its coverage of applications, lacks certain important variables. Key contextual factors, such as community objections, project complexity, or the presence of political or economic pressures, are not captured. For instance, the dataset does not provide information about why certain applications are refused or approved beyond the recorded decision, limiting the ability to analyze qualitative or situational influences.
 
 2. **Methodological Constraints**
 The Bayesian logistic regression model assumes that the relationships between predictors and the outcome variable are additive and linear on the log-odds scale. This assumption may oversimplify real-world interactions between variables, such as how specific planning districts may interact with application types or temporal trends. The model's relatively low accuracy for both the training and test datasets suggests underfitting, indicating that it fails to capture the full complexity of the data and may not adequately explain the variance in outcomes. This limitation could stem from insufficient predictors, unaccounted non-linear relationships, or interactions among variables. Furthermore, the model does not fully account for potential multicollinearity among predictors, which could distort the estimated coefficients. While priors were carefully chosen, their influence on the results might vary with a different prior specification, introducing some degree of subjectivity into the analysis.
 
 3. **Simplified Representation of Approval Dynamics**
-The approval process involves a combination of bureaucratic procedures, stakeholder negotiations, and technical considerations that are not fully captured in this analysis. For example, public hearings, lobbying efforts, and input from local communities likely play a significant role in shaping decisions but are absent from the dataset. This simplification means that the model captures only part of the story, potentially overlooking nuanced dynamics in urban planning and governance.
+The approval process involves a combination of bureaucratic procedures, stakeholder negotiations, and technical considerations that are not fully captured in this analysis. For example, public hearings, lobbying efforts, and input from local communities likely play a significant role in shaping decisions but are absent from the dataset. This simplification means that the model captures only part of the story, potentially overlooking sophisticated dynamics in urban planning and governance.
 
 4. **Geographic and Temporal Generalizability**
 The analysis focuses exclusively on the City of Toronto, meaning the findings are context-specific and may not generalize to other municipalities with different urban planning frameworks, policies, or demographic pressures. Temporal trends in approval rates, for example, could be influenced by unique local events or policy changes that are not representative of broader patterns. Similarly, the observed geographic variability in approval rates might reflect Toronto-specific zoning challenges rather than universal principles.
@@ -662,19 +666,19 @@ The analysis focuses exclusively on the City of Toronto, meaning the findings ar
 
 Building on the findings and addressing the limitations of this paper, there are several avenues for future research and analysis that could provide a deeper understanding of the factors influencing application approvals in urban planning contexts.
 
-One critical next step is to expand the dataset by incorporating additional variables that capture contextual and qualitative factors influencing decisions. Data on community feedback and objections during public hearings is a good choice since it could provide insights into how local resistance or support impacts approval likelihood. Information on project complexity, such as the scale, type, and potential impact of proposals, could reveal patterns in decision-making. Besides, access to committee meeting notes or further exploration in meeting minutes would help clarify the reasoning behind specific approvals or refusals. Furthermore, integrating economic and political context, such as local economic indicators or changes in political leadership, would offer a broader understanding of approval trends.
+One important next step is to expand the dataset by incorporating additional variables that capture contextual and qualitative factors influencing decisions. Data on community feedback and objections during public hearings is a good choice since it could show how local resistance or support impacts approval likelihood. Information on project complexity, such as the scale, type, and potential impact of proposals, could indicate patterns in decision-making. Besides, access to committee meeting notes or further investigation in meeting minutes would help clarify the reasoning behind specific approvals or refusals. Furthermore, integrating economic and political context, such as local economic indicators or changes in political leadership, would offer a broader understanding of approval trends.
 
-The current model assumes additive relationships between predictors and approval likelihood, which may oversimplify real-world dynamics. Future research could explore nonlinear relationships, such as whether certain predictors have diminishing or exponential effects on approval rates. Interaction effects between predictors, such as the interplay between planning districts and application types, could also provide more nuanced insights. For instance, minor variances may be treated differently in densely populated urban areas compared to suburban districts.
+The current model assumes additive relationships between predictors and approval likelihood, which may oversimplify real-world dynamics. Future research could explore nonlinear relationships, such as whether certain predictors have diminishing or exponential effects on approval rates. Interaction effects between predictors, such as the interplay between planning districts and application types, could also provide more subtle observation. For instance, minor variances may be treated differently in densely populated urban areas compared to suburban districts.
 
 Extending this analysis to other municipalities or regions would help determine whether the observed trends in Toronto are unique or indicative of broader urban planning practices. Cross-regional comparisons could identify common principles across jurisdictions, highlight local deviations driven by distinct policies or demographics, and establish benchmarks for understanding how Toronto’s process aligns with other cities. Such studies could enhance the generalizability of findings and provide practical lessons for urban planners in different contexts.
 
-Despite to future improvements for addressing limitations, further exploration can be continued based on the current result. The temporal trends identified in this paper suggest shifts in approval rates over time, but the reasons behind these changes remain unexplored. Future work could examine specific policy changes or regulatory updates to understand their impact on approval trends. Additionally, external events such as economic downturns, housing crises, or infrastructure investments could be analyzed for their influence on application volumes and decisions. A difference-in-differences approach could also help isolate the effects of significant policy interventions, providing a clearer picture of causal relationships.
+Despite to future improvements for addressing limitations, further examination can be continued based on the current result. The temporal trends identified in this paper suggest shifts in approval rates over time, but the reasons behind these changes remain unexplored. Future work could examine specific policy changes or regulatory updates to understand their impact on approval trends. Additionally, external events such as economic downturns, housing crises, or infrastructure investments could be analyzed for their influence on application volumes and decisions. A difference-in-differences approach could also help isolate the effects of significant policy interventions, providing a clearer picture of causal relationships.
 
-Given the importance of geographic variability in approval rates, future research could adopt spatial analysis techniques. Spatial regression models could account for spatial autocorrelation and clustering effects in planning districts, while network analysis could study relationships between districts, such as spillover effects of development activity. Additionally, analyzing proximity to key infrastructure, such as transit hubs or commercial centers, could provide insights into spatial patterns of decision-making.
+Given the importance of geographic variability in approval rates, future research could adopt spatial analysis techniques. Spatial regression models could account for spatial autocorrelation and clustering effects in planning districts, while network analysis could study relationships between districts, such as spillover effects of development activity. Additionally, analyzing proximity to key infrastructure, such as transit hubs or commercial centers, could provide perceptions into spatial patterns of decision-making.
 
 Finally, the findings from this paper could inform the development of predictive tools to assist urban planners and developers. These tools could provide probabilistic forecasts of approval likelihood based on project attributes and contextual factors. Additionally, they could help committees identify systemic biases or inefficiencies in their decision-making processes and aid policymakers in designing more equitable and transparent approval frameworks.
 
-In summary, future research should prioritize richer data integration, explore more sophisticated modeling techniques, and broaden the scope of analysis to other regions and temporal contexts. These steps would not only enhance academic understanding of urban planning decisions but also provide actionable insights for policymakers, developers, and urban planners working toward effective and equitable processes.
+In summary, future research should prioritize richer data integration, explore more sophisticated modeling techniques, and broaden the scope of analysis to other regions and temporal contexts. These steps would not only enhance academic understanding of urban planning decisions but also provide actionable perceptions for policymakers, developers, and urban planners working toward effective and equitable processes.
 
 \newpage
 
@@ -714,7 +718,7 @@ Records with missing values in the chosen variables (decision, application_type,
 
 In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows the model's ability to generate data consistent with the observed data. By overlaying the observed data and simulated replicated datasets  generated from the posterior predictive distribution, we assess the model's adequacy. The close alignment between the observed data and the majority of the simulated replicated datasets indicates that the model captures the underlying structure of the data well. Deviations would signal potential misfits or areas where the model assumptions may need to be revised.
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This comparison highlights how the data influenced parameter estimates. Large shifts from the prior to the posterior, such as seen for certain planning districts and years, suggest strong data-driven updates. Conversely, parameters where the posterior closely resembles the prior indicate minimal influence from the observed data. This evaluation helps assess the informativeness of the priors and the robustness of the parameter estimates, ensuring the model is both data- and prior-consistent.
+In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This comparison highlights how the data influenced parameter estimates. Large shifts from the prior to the posterior, such as seen for certain planning districts and years, suggest strong empirical updates. Conversely, parameters where the posterior closely resembles the prior indicate minimal influence from the observed data. This evaluation helps assess the informativeness of the priors and the robustness of the parameter estimates, ensuring the model is both data- and prior-consistent.
 
 ```{r}
 #| eval: true
@@ -740,21 +744,44 @@ posterior_vs_prior(model) +
 
 ## Diagnostics
 
-@fig-stanareyouokay-1 is a trace plot. It shows he sampled values for each chain of the Markov Chain Monte Carlo (MCMC) simulation over iterations. The chains appear to mix well and explore the parameter space without any evident trends or stickiness, suggesting convergence. The consistent overlap of chains indicates that the posterior distribution has been effectively sampled, reducing the risk of bias due to poor chain mixing or non-convergence.
+@fig-trace presents trace plots. It shows the sampled values for each chain of the Markov Chain Monte Carlo (MCMC) simulation over iterations. The chains appear to mix well and explore the parameter space without any evident trends or stickiness, suggesting convergence. The consistent overlap of chains indicates that the posterior distribution has been effectively sampled, reducing the risk of bias due to poor chain mixing or non-convergence.
 
-@fig-stanareyouokay-2 is a Rhat plot. It evaluates the Gelman-Rubin convergence diagnostic. All parameters show $\hat{R}$ values close to 1, which indicates that the between-chain and within-chain variances are nearly identical. This confirms that the MCMC chains have converged and are sampling from the same target distribution, validating the reliability of the posterior estimates.
+@fig-rhat is a Rhat plot. It evaluates the Gelman-Rubin convergence diagnostic. All parameters show $\hat{R}$ values close to 1, which indicates that the between-chain and within-chain variances are nearly identical. This confirms that the MCMC chains have converged and are sampling from the same target distribution, validating the reliability of the posterior estimates.
 
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-#| label: fig-stanareyouokay
+#| label: fig-trace
 #| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 1
+#| fig-subcap: ["Trace plot of Intercept", "Trace plot of Application type MV", "Trace plot of year 2017", "Trace plot of year 2018", "Trace plot of year 2019", "Trace plot of year 2020", "Trace plot of year 2021", "Trace plot of year 2022", "Trace plot of year 2023", "Trace plot of year 2024", "Trace plot of planning district NorthYork", "Trace plot of planning district Scarborough", "Trace plot of planning district EastYork"]
+#| layout-ncol: 3
 
-plot(model, "trace")
+plot(model, "trace", "(Intercept)")
+plot(model, "trace", "application_typeMV")
+plot(model, "trace", "year2017")
+plot(model, "trace", "year2018")
+plot(model, "trace", "year2019")
+plot(model, "trace", "year2020")
+plot(model, "trace", "year2021")
+plot(model, "trace", "year2022")
+plot(model, "trace", "year2023")
+plot(model, "trace", "year2024")
+plot(model, "trace", "planning_districtNorth York")
+plot(model, "trace", "planning_districtScarborough")
+plot(model, "trace", "planning_districtToronto East York")
+
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+#| label: fig-rhat
+#| fig-cap: "Rhat plot"
+#| layout-ncol: 1
 
 plot(model, "rhat")
 ```
@@ -790,7 +817,7 @@ Hence, to achieve a representative sample, stratified random sampling will be em
 - Planning districts: Stratify by Toronto's four major planning districts to capture geographic diversity. (North York, Scarborough, Toronto East York, and Etobicoke York)
 - Applicant roles: Group participants by their involvement in the application process. (Individual Property Owners, Developers, and Consultants)
 
-Within these strata, respondents will be randomly selected to align with the distribution of these categories in the broader population. The process begins by grouping the population into strata defined by characteristics such as application type, planning district, and applicant role. Afterward, random samples are drawn independently from each subgroup, ensuring proportional representation. In cases where smaller groups are critical to the study, adjustments can be made to ensure adequate representation. Finally, the selected samples from each subgroup are combined to create the overall sample, ensuring that all significant categories are included.
+Within these strata, respondents will be randomly selected to align with the distribution of these categories in the broader population. The process begins by grouping the population into strata defined by characteristics such as application type, planning district, and applicant role. Afterward, random samples are drawn independently from each subgroup, ensuring proportional representation. In cases where smaller groups are important to the study, adjustments can be made to ensure adequate representation. Finally, the selected samples from each subgroup are combined to create the overall sample, ensuring that all significant categories are included.
 
 `Sampling: Design and Analysis` (@lohr2021sampling) explores how stratified sampling reduces variability by dividing populations into homogeneous groups, enabling more precise estimates and better resource allocation. By applying these principles, the paper ensures that the analysis accounts for heterogeneity in geographic and temporal patterns of planning applications, enabling robust conclusions about decision-making trends. The methodology follows Lohr’s recommendation to tailor strata definitions to the study's objectives, enhancing the reliability of the results.
 
@@ -824,7 +851,7 @@ Understanding Urban Planning Decisions
 
 **Introduction:**
 
-I appreciate your participation in this survey, which seeks to better understand the factors influencing urban planning decisions and application outcomes in Toronto. Your responses are crucial for enhancing the research and contributing to insights that could inform future urban planning processes.
+I appreciate your participation in this survey, which seeks to better understand the factors influencing urban planning decisions and application outcomes in Toronto. Your responses are pivotal for enhancing the research and contributing to perceptions that could inform future urban planning processes.
 
 **Please note:**
 
@@ -834,7 +861,7 @@ I appreciate your participation in this survey, which seeks to better understand
 - The survey is estimated to take about 5 minutes to complete.
 - If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
 
-Thank you for your valuable contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
+Thank you for your significant contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
 
 **Section 1: Application Details**
 
@@ -956,7 +983,7 @@ Were there any external factors (e.g., economic conditions, policy changes) that
 
 - No
 
-Do you have any further comments or insights about the factors that might affect the application decision?
+Do you have any further comments or awareness about the factors that might affect the application decision?
 
 [answer box]
 
@@ -972,39 +999,39 @@ What improvements would you recommend for the application process?
 
 - Others (please specify)
 
-Do you have any further comments or insights about the application process?
+Do you have any further comments or awareness about the application process?
 
 d[answer box]
 
 **End Message:**
 Thank You for Completing the Survey!
 
-We sincerely appreciate your time and thoughtful responses. Your participation is essential in helping us gain a deeper understanding of the factors influencing urban planning decisions in Toronto. Your insights will contribute to research aimed at improving zoning application processes and understanding decision dynamics.
+We sincerely appreciate your time and thoughtful responses. Your participation is essential in helping us gain a deeper understanding of the factors influencing urban planning decisions in Toronto. Your awareness will contribute to research aimed at improving zoning application processes and understanding decision dynamics.
 
 If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
 
-As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your valuable contribution!
+As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your significant contribution!
 
 
 ## Surevey Design Consideration
 
 When designing the survey, several key factors were considered to ensure representativeness, clarity, and relevance to the study's objectives. The survey targets individuals involved in Toronto’s urban planning processes, including property owners, developers, and consultants.
 
-Question phrasing was tailored to align with terminology familiar to the target respondents, minimizing ambiguity. Efforts were also made to limit the survey's length to encourage participation while ensuring sufficient data for meaningful analysis. A balance was struck between closed-ended questions, which facilitate quantitative analysis, and open-ended questions, which capture nuanced qualitative insights. Additionally, the survey design accounted for ethical considerations, such as maintaining confidentiality and emphasizing voluntary participation.
+Question phrasing was tailored to align with terminology familiar to the target respondents, minimizing ambiguity. Efforts were also made to limit the survey's length to encourage participation while ensuring sufficient data for meaningful analysis. A balance was struck between closed-ended questions, which facilitate quantitative analysis, and open-ended questions, which capture intricate qualitative findings. Additionally, the survey design accounted for ethical considerations, such as maintaining confidentiality and emphasizing voluntary participation.
 
 
 ## Strength
 
-The survey design has several strengths. Stratified random sampling ensures that the results are representative of the population, reducing sampling bias. By aligning strata with key demographic and process variables, the survey facilitates detailed subgroup analysis, enhancing the depth of insights. The inclusion of both quantitative and qualitative questions allows for an overall understanding of the factors influencing urban planning decisions. Closed-ended questions enable statistical analysis, while open-ended responses provide richer context and identify factors not captured in the observational dataset.
+The survey design has several strengths. Stratified random sampling ensures that the results are representative of the population, reducing sampling bias. By aligning strata with key demographic and process variables, the survey facilitates detailed subgroup analysis, enhancing the depth of discovery. The inclusion of both quantitative and qualitative questions allows for an overall understanding of the factors influencing urban planning decisions. Closed-ended questions enable statistical analysis, while open-ended responses provide richer context and identify factors not captured in the observational dataset.
 
-The survey also addresses gaps in the cleaned dataset, such as perceptions of community feedback, challenges during the application process, and external influences on decisions. These insights complement the quantitative data, offering a more holistic view of the decision-making process.
+The survey also addresses gaps in the cleaned dataset, such as perceptions of community feedback, challenges during the application process, and external influences on decisions. They complement the quantitative data, offering a more holistic view of the decision-making process.
 
 
 ## Weakness
 
 Despite its strengths, the survey has some limitations. Stratified random sampling requires precise knowledge of the population's composition, which may not always be accurate, particularly for less-documented strata. Smaller strata, such as applications from certain districts or less common applicant roles, may result in small sample sizes, limiting statistical power. Additionally, reliance on self-reported data introduces the potential for response bias, as participants may overstate or understate certain factors, particularly regarding the impact of community feedback or external influences.
 
-The survey's limited length, while improving completion rates, may constrain the depth of responses, especially for complex topics. Furthermore, the survey results are context-specific, reflecting Toronto’s unique regulatory framework and urban planning dynamics, which may limit the generalizability of findings to other cities or contexts. Despite these challenges, the survey is a valuable tool for supplementing the dataset and addressing research objectives.
+The survey's limited length, while improving completion rates, may constrain the depth of responses, especially for complex topics. Furthermore, the survey results are context-specific, reflecting Toronto’s unique regulatory framework and urban planning dynamics, which may limit the generalizability of findings to other cities or contexts. Despite these challenges, the survey is a useful tool for supplementing the dataset and addressing research objectives.
 
 
 \newpage
