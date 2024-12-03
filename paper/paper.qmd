@@ -1,7 +1,7 @@
 ---
 title: "Understanding Factors Contributing to Application Approval in Urban Planning Decisions (2016-2024)"
 subtitle: "Analysis using data from Toronto’s Committee of Adjustment applications using Bayesian Logistic Regression"
-author: Angel Xu
+author: Victoria Zheng
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
@@ -129,7 +129,7 @@ library(ggplot2)
 #### Plot the distribution of `decision` ####
 ggplot(analysis_data, aes(x = factor(decision))) +
   geom_bar(fill = "lightblue", color = "black") +
-  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
   labs(
     x = "Decision (0 = Refused, 1 = Approved)",
     y = "Count"
@@ -141,7 +141,6 @@ ggplot(analysis_data, aes(x = factor(decision))) +
     axis.title.y = element_text(size = 14),
     axis.text = element_text(size = 12)
   )
-
 ```
 
 @fig-decision illustrates the distribution of decision outcomes. Out of the total applications, 1,207 (66.5%) were approved, while 607 (33.5%) were refused. This demonstrates that the majority of applications submitted to the Committee of Adjustment are approved, suggesting that most requests align with zoning regulations or are deemed acceptable following the committee's review process.
@@ -157,7 +156,7 @@ ggplot(analysis_data, aes(x = factor(decision))) +
 decision_summary <- analysis_data %>%
   group_by(decision) %>%
   summarize(
-    Percentage = paste0(round((n() / nrow(analysis_data)) * 100, 1), "%") # Add '%' symbol
+    Percentage = paste0(round((n() / nrow(analysis_data)) * 100, 1), "%")
   ) %>%
   mutate(Decision = ifelse(decision == 1, "Approved (1)", "Refused (0)")) %>%
   select(Decision, Percentage)
@@ -165,7 +164,7 @@ decision_summary <- analysis_data %>%
 #### Create a kable table ####
 decision_summary %>%
   kable(
-    format = "html", 
+    format = "html",
     col.names = c("Decision", "Percentage")
   )
 ```
@@ -195,7 +194,7 @@ These categories represent distinct regulatory processes, with Consents generall
 #### Plot the distribution of `application_type` ####
 ggplot(analysis_data, aes(x = factor(application_type))) +
   geom_bar(fill = "lightgreen", color = "black") +
-  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
   labs(
     x = "Application Type",
     y = "Count"
@@ -207,8 +206,6 @@ ggplot(analysis_data, aes(x = factor(application_type))) +
     axis.title.y = element_text(size = 14),
     axis.text = element_text(size = 12)
   )
-
-
 ```
 
 @fig-application-types presents the distribution of applications by type. Minor Variances account for the majority of applications which reach to 1371 (75.6%), reflecting the routine nature of these requests in urban development. In contrast, Consents are less frequent which only have 443 counts (24.4%), likely due to their more specific requirements and potential complexity.
@@ -224,15 +221,17 @@ ggplot(analysis_data, aes(x = factor(application_type))) +
 application_summary <- analysis_data %>%
   group_by(application_type) %>%
   summarize(
-    Percentage = paste0(round((n() / nrow(analysis_data)) * 100, 1), "%") # Add %
+    Percentage = paste0(round((n() / nrow(analysis_data)) * 100, 1), "%")
   ) %>%
-  mutate(Application_Type = ifelse(application_type == "MV", "Minor Variance (MV)", "Consent (CO)")) %>%
+  mutate(Application_Type = ifelse(application_type == "MV",
+    "Minor Variance (MV)", "Consent (CO)"
+  )) %>%
   select(Application_Type, Percentage)
 
 #### Create a kable table ####
 application_summary %>%
   kable(
-    format = "html", 
+    format = "html",
     col.names = c("Application Type", "Percentage")
   )
 ```
@@ -256,7 +255,7 @@ The year variable represents the year of submission for each application in the 
 #### Plot the distribution of `year` ####
 ggplot(analysis_data, aes(x = factor(year))) +
   geom_bar(fill = "skyblue", color = "black") +
-  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
   labs(
     x = "Year",
     y = "Count"
@@ -268,8 +267,6 @@ ggplot(analysis_data, aes(x = factor(year))) +
     axis.title.y = element_text(size = 14),
     axis.text = element_text(size = 12)
   )
-
-
 ```
 
 @fig-year clarifies the distribution of applications from 2016 to 2024, with notable fluctuations in annual counts. Fewer applications were submitted during 2016-2019, with counts declining steadily from 198 applications in 2016 to a low of 93 in 2019. This period may reflect a stabilization phase or lower activity in urban development processes. Afterwards, application counts increased significantly, peaking in 2023 with 378 applications, followed by a slight decline to 249 in 2024. The rise in 2023 may be due to heightened development activity or easing of restrictions from prior external events, such as the COVID-19 pandemic.
@@ -292,7 +289,7 @@ year_summary <- analysis_data %>%
 #### Create a kable table ####
 year_summary %>%
   kable(
-    format = "html", 
+    format = "html",
     col.names = c("Years", "Percentage")
   )
 ```
@@ -316,7 +313,7 @@ The planning district variable identifies the geographic district within Toronto
 #### Plot the distribution of `planning_district` ####
 ggplot(analysis_data, aes(x = factor(planning_district))) +
   geom_bar(fill = "coral", color = "black") +
-  geom_text(stat = 'count', aes(label = ..count..), vjust = -0.5) +
+  geom_text(stat = "count", aes(label = ..count..), vjust = -0.5) +
   labs(
     x = "Planning District",
     y = "Count"
@@ -327,9 +324,8 @@ ggplot(analysis_data, aes(x = factor(planning_district))) +
     axis.title.x = element_text(size = 14),
     axis.title.y = element_text(size = 14),
     axis.text = element_text(size = 12),
-    axis.text.x = element_text(angle = 45, hjust = 1) # Rotate district labels for readability
+    axis.text.x = element_text(angle = 45, hjust = 1)
   )
-
 ```
 
 @fig-district displays the distribution of applications across four planning districts. We can observe that North York has the highest number of applications, accounting for a significant proportion of the dataset. This could reflect the area's high density of development projects or active property owners seeking zoning adjustments. Scarborough has the fewest applications, possibly due to fewer development activities or stricter zoning compliance. Etobicoke York and Toronto East York have moderate numbers of applications, reflecting their roles as active but less prominent districts compared to North York.
@@ -351,7 +347,7 @@ district_summary <- analysis_data %>%
 #### Create a kable table ####
 district_summary %>%
   kable(
-    format = "html", 
+    format = "html",
     col.names = c("Planning Districts", "Percentage")
   )
 ```
@@ -413,6 +409,8 @@ Compared to traditional generalized linear models (GLM), the Bayesian approach a
 The model also stands out against simpler approaches, such as simple linear regression (SLR). While SLR might be used for binary outcomes in certain contexts, it is theoretically inappropriate because it does not constrain predictions to the [0,1] interval. This can result in nonsensical predicted probabilities outside this range. Moreover, SLR assumes a linear relationship between predictors and the response variable, which is unsuitable for binary outcomes. The logit transformation in logistic regression, by contrast, ensures a proper probabilistic framework while preserving interpretability in terms of log-odds.
 
 The predictors included in the model further justify the choice of Bayesian logistic regression. Application type captures fundamental differences in how various categories of applications, such as minor variances and consents, might affect approval outcomes. Submission date is treated as a continuous variable, reflecting temporal trends without arbitrary grouping, while planning district accounts for geographic variability through categorical indicators. These predictors are naturally suited to a logistic framework, and the Bayesian approach accommodates any inherent variability in their effects.
+
+`Mostly Harmless Econometrics` (@angrist2009mostly) addresses how to handle variability in time-series and cross-sectional data, focusing on ensuring robust and interpretable results. The use of submission year and planning district as key predictors aligns with Angrist and Pischke's guidance on analyzing temporal and geographic variation. Their discussion on the importance of controlling for time trends and location-specific effects validates the inclusion of these variables in the Bayesian logistic regression model.
 
 In summary, Bayesian logistic regression provides a robust, clarified, and flexible framework for analyzing the factors influencing application decisions. Its advantages over GLM and SLR include the ability to incorporate prior information, quantify uncertainty, and handle the non-linear nature of the binary response variable. By balancing methodological rigor with practical transparency, this model ensures that the analysis remains both statistically sound and actionable for stakeholders.
 
@@ -586,7 +584,6 @@ ggplot(predict_data_long, aes(x = application_type, y = prob)) +
     y = "Predicted Probability of Approval"
   ) +
   theme_minimal()
-
 ```
 
 @fig-pp-type demonstrates variability in the predicted probability of approval between consent applications (CO) and minor variances (MV). Consent applications exhibit a slightly higher median predicted probability of approval compared to minor variances. The interquartile range (IQR) for both application types is comparable, indicating a similar spread of probabilities. However, minor variance applications show a broader lower whisker, suggesting that certain cases have substantially lower probabilities of approval. This supports the interpretation that minor variances may face stricter scrutiny due to their greater potential impact on zoning.
@@ -727,7 +724,8 @@ In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. Th
 #| label: fig-ppcheckandposteriorvsprior
 #| layout-ncol: 1
 #| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+#| fig-subcap: ["Posterior prediction check",
+#| "Comparing the posterior with the prior"]
 
 pp_check(model) +
   theme_classic() +
@@ -794,7 +792,9 @@ Hence, to achieve a representative sample, stratified random sampling will be em
 
 Within these strata, respondents will be randomly selected to align with the distribution of these categories in the broader population. The process begins by grouping the population into strata defined by characteristics such as application type, planning district, and applicant role. Afterward, random samples are drawn independently from each subgroup, ensuring proportional representation. In cases where smaller groups are critical to the study, adjustments can be made to ensure adequate representation. Finally, the selected samples from each subgroup are combined to create the overall sample, ensuring that all significant categories are included.
 
-This method reduces sampling variability, enhances representation, and provides more accurate estimates compared to simple random sampling, as the unique characteristics of each subgroup are reflected in the final sample.
+`Sampling: Design and Analysis` (@lohr2021sampling) explores how stratified sampling reduces variability by dividing populations into homogeneous groups, enabling more precise estimates and better resource allocation. By applying these principles, the paper ensures that the analysis accounts for heterogeneity in geographic and temporal patterns of planning applications, enabling robust conclusions about decision-making trends. The methodology follows Lohr’s recommendation to tailor strata definitions to the study's objectives, enhancing the reliability of the results.
+
+Besides, `Sampling` (@thompson2012sampling) provides a detailed guide to modern sampling techniques, emphasizing the importance of tailoring approaches to study objectives. His discussion on stratified sampling highlights its benefits in improving precision and reducing bias by dividing populations into homogeneous subgroups. This aligns with the choice of using planning districts, application types, and submission years as strata to ensure balanced representation and capture temporal and spatial variability in urban planning decisions. Thompson’s principles validate the proportional sampling approach adopted here, supporting its effectiveness in generating reliable analyses.
 
 ### Trade-offs
 While stratified random sampling ensures proportional representation and enhances the precision of survey estimates, it is not without challenges. One notable trade-off is the complexity involved in defining and managing multiple strata, particularly when the strata are based on multiple dimensions such as application type, planning district, and applicant role. This complexity increases the time and resources required for sample design and execution. For instance, ensuring proportional representation across strata like **Scarborough developers** or **North York consultants** may necessitate oversampling in smaller groups, leading to additional effort in recruitment and logistical coordination.
@@ -832,7 +832,7 @@ I appreciate your participation in this survey, which seeks to better understand
 - Participation in this survey is voluntary.
 - You are encouraged to provide honest and thoughtful responses.
 - The survey is estimated to take about 5 minutes to complete.
-- If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
+- If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Victoria Zheng).
 
 Thank you for your valuable contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
 
@@ -981,7 +981,7 @@ Thank You for Completing the Survey!
 
 We sincerely appreciate your time and thoughtful responses. Your participation is essential in helping us gain a deeper understanding of the factors influencing urban planning decisions in Toronto. Your insights will contribute to research aimed at improving zoning application processes and understanding decision dynamics.
 
-If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
+If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Victoria Zheng).
 
 As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your valuable contribution!
 
