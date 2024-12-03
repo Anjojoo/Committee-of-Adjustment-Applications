@@ -1,7 +1,7 @@
 ---
 title: "Understanding Factors Contributing to Application Approval in Urban Planning Decisions (2016-2024)"
 subtitle: "Analysis using data from Toronto’s Committee of Adjustment applications using Bayesian Logistic Regression"
-author: Victoria Zheng
+author: Angel Xu
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
@@ -832,7 +832,7 @@ I appreciate your participation in this survey, which seeks to better understand
 - Participation in this survey is voluntary.
 - You are encouraged to provide honest and thoughtful responses.
 - The survey is estimated to take about 5 minutes to complete.
-- If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Victoria Zheng).
+- If you have any questions or concerns, feel free to reach out to me at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
 
 Thank you for your valuable contribution! As a token of our appreciation, each participant will receive $5 upon completion of the survey.
 
@@ -981,7 +981,7 @@ Thank You for Completing the Survey!
 
 We sincerely appreciate your time and thoughtful responses. Your participation is essential in helping us gain a deeper understanding of the factors influencing urban planning decisions in Toronto. Your insights will contribute to research aimed at improving zoning application processes and understanding decision dynamics.
 
-If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Victoria Zheng).
+If you have any questions or would like to learn more about this study, please don’t hesitate to contact our research team at [anjojoo.xu@mail.utoronto.ca](anjojoo.xu@mail.utoronto.ca) (Angel Xu).
 
 As a token of our gratitude, each participant will receive a $5 reward shortly after completing the survey. Thank you again for your valuable contribution!
 
