@@ -829,16 +829,16 @@ Within these strata, respondents will be randomly selected to align with the dis
 Besides, `Sampling` [@thompson2012sampling] provides a detailed guide to modern sampling techniques, emphasizing the importance of tailoring approaches to study objectives. His discussion on stratified sampling highlights its benefits in improving precision and reducing bias by dividing populations into homogeneous subgroups. This aligns with the choice of using planning districts, application types, and submission years as strata to ensure balanced representation and capture temporal and spatial variability in urban planning decisions. Thompson’s principles validate the proportional sampling approach adopted here, supporting its effectiveness in generating reliable analyses.
 
 ### Trade-offs
-While stratified random sampling ensures proportional representation and enhances the precision of survey estimates, it is not without challenges. One notable trade-off is the complexity involved in defining and managing multiple strata, particularly when the strata are based on multiple dimensions such as application type, planning district, and applicant role. This complexity increases the time and resources required for sample design and execution. For instance, ensuring proportional representation across strata like **Scarborough developers** or **North York consultants** may necessitate oversampling in smaller groups, leading to additional effort in recruitment and logistical coordination.
+While stratified random sampling ensures proportional representation and enhances the precision of survey estimates, it is not without challenges. One notable trade-off is the complexity involved in defining and managing multiple strata, particularly when the strata are based on multiple dimensions such as application type, planning district, and applicant role. This complexity increases the time and resources required for sample design and execution. For instance, ensuring proportional representation across strata like Scarborough developers or North York consultants may necessitate oversampling in smaller groups, leading to additional effort in recruitment and logistical coordination.
 
-Another trade-off lies in the potential for overstratification, which can result in small sample sizes within certain strata. If some strata, such as **Scarborough Consent applications**, have very few members, it may be difficult to draw statistically meaningful conclusions. This could necessitate adjustments, such as combining smaller strata or applying post-stratification weighting, which could introduce bias or reduce interpretability. Additionally, the method assumes that the characteristics used to define strata are adequately known and relevant, which may not account for unobserved variables that influence the outcomes, such as the socio-political environment or project complexity. Despite these challenges, the benefits of stratified random sampling in terms of improved accuracy and subgroup analysis make it a robust choice for this study.
+Another trade-off lies in the potential for overstratification, which can result in small sample sizes within certain strata. If some strata, such as Scarborough Consent applications, have very few members, it may be difficult to draw statistically meaningful conclusions. This could necessitate adjustments, such as combining smaller strata or applying post-stratification weighting, which could introduce bias or reduce interpretability. Additionally, the method assumes that the characteristics used to define strata are adequately known and relevant, which may not account for unobserved variables that influence the outcomes, such as the socio-political environment or project complexity. Despite these challenges, the benefits of stratified random sampling in terms of improved accuracy and subgroup analysis make it a robust choice for this study.
 
 
 ## Data Validation
 Survey responses would be validated through cross-referencing with the cleaned dataset. For instance:
 
 Matching survey-reported outcomes with recorded decisions.
-Verifying consistency between applicant-reported application details and dataset attributes (e.g., application type, planning district).
+Verifying consistency between applicant-reported application details and dataset attributes.
 To ensure representativeness, response rates would be monitored, and additional recruitment efforts would target underrepresented groups or districts.
 
 
@@ -944,7 +944,7 @@ How many years of experience do you have in urban planning or related fields?
 
 - 5–10 years
 
-- >10 years
+- more than 10 years
 
 - Prefer not to say
 
@@ -982,7 +982,7 @@ Do you believe community feedback impacted the outcome of your application?
 
 - No
 
-Were there any external factors (e.g., economic conditions, policy changes) that influenced the decision?
+Were there any external factors (e.g. economic conditions, policy changes) that influenced the decision?
 
 - Yes
 
@@ -1006,7 +1006,7 @@ What improvements would you recommend for the application process?
 
 Do you have any further comments or awareness about the application process?
 
-d[answer box]
+[answer box]
 
 **End Message:**
 Thank You for Completing the Survey!
