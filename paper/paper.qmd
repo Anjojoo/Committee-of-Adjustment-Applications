@@ -5,7 +5,7 @@ author: Angel Xu
 thanks: "Code and data are available at: [https://github.com/Anjojoo/Committee-of-Adjustment-Applications](https://github.com/Anjojoo/Committee-of-Adjustment-Applications)."
 date: today
 date-format: long
-abstract: "This paper analyzes urban planning application approvals submitted to Toronto's Committee of Adjustment from 2016 to 2024, focusing on key predictors such as application type, submission year, and planning district using Bayesian logistic regression. The analysis shows that consents are more likely to be approved than minor variances, with approval rates generally increasing over time, particularly from 2017 onward, though fluctuations are observed in certain years. Geographic disparities were identified, with North York showing the highest likelihood of approval, while Scarborough faced stricter reviews. These findings enhance understanding of urban planning decision-making processes, offering perceptions into temporal trends, geographic variability, and areas for equitable policy adjustments."
+abstract: "This paper analyzes urban planning application approvals submitted to Toronto's Committee of Adjustment from 2016 to 2024, focusing on key predictors such as application type, submission year, and planning district using Bayesian logistic regression. The analysis shows that Consents are more likely to be approved than Minor Variances, with approval rates generally increasing over time, particularly from 2017 onward, despite fluctuations in certain years. Geographic disparities were identified, with North York showing the highest likelihood of approval, while Scarborough faced stricter reviews. These findings enhance understanding of urban planning decision-making processes, offering implications into temporal trends, geographic variability, and areas for equitable policy adjustments."
 format: pdf
 toc: true
 number-sections: true
@@ -21,8 +21,10 @@ library(tidyverse)
 library(opendatatoronto)
 library(modelsummary)
 library(knitr)
+library(arrow)
 
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
+analysis_data <- read_parquet(here::here(
+  "data/02-analysis_data/analysis_data.parquet"))
 ```
 
 
@@ -34,65 +36,65 @@ This paper examines the factors influencing approval decisions for planning appl
 
 The findings indicate that consents are more likely to be approved than minor variances, reflecting differences in the scrutiny applied to these application types. Approval rates show notable temporal trends, with the highest approval likelihood observed in 2018, where odds of approval were 161% higher compared to the baseline year of 2016. Significant increases are also evident in 2017 and 2020, with approval rates showing consistent improvement over time, despite some fluctuations. Additionally, geographic disparities are evident, with North York exhibiting the highest approval probabilities, while Scarborough demonstrates lower likelihoods, potentially due to district-specific planning challenges. The difference in approval rates across Toronto’s planning districts suggests localized factors influence decision-making. These results enhance understanding of the approval process and highlight areas where decision-making could become more consistent and equitable.
 
-This study is important because it addresses an area of urban development that has direct implications for policy-making and planning efficiency. By analyzing approval patterns, the research helps clarify how procedural factors, geographic contexts, and temporal variations affect outcomes, providing a deeper understanding of the mechanisms at work in planning decisions. This understanding is essential for fostering accountability and ensuring that urban growth aligns with community needs and regulatory frameworks. The findings also serve as a foundation for improving processes and reducing inconsistencies, contributing to more equitable and transparent urban governance.
+This study is important because it addresses an area of urban development that has direct implications for policy-making and planning efficiency. By analyzing approval patterns, the research clarifies how procedural factors, geographic contexts, and temporal variations affect outcomes, providing a deeper understanding of the mechanisms at work in planning decisions. This understanding is essential for fostering accountability and ensuring that urban growth aligns with community needs and regulatory frameworks. The findings also serve as a foundation for improving processes and reducing inconsistencies, contributing to more equitable and transparent urban governance.
 
 The remainder of this paper is structured as follows. @sec-data introduces the overview of the data (@sec-data-overview), measurement (@sec-data-measurement), data cleaning process (@sec-data-cleaning), data features (@sec-data-feature), as well as explanations, descriptions, table and graph summaries of outcome (@sec-data-outcome) and predictor variables (@sec-data-predictor) of the study. @sec-model explains the modeling process in detail, including procedure of model set-up, model justifications, model assumptions, and potential limitations. Then, @sec-result highlights the prediction outcome and results by model summary and plots. Finally, @sec-dis includes discussions based on the results, linking it to the real world and also states some weakness of the study. 
 
 
 ## Estimand
 
-This study aims to estimate the factors influencing the approval decisions for urban planning applications in Toronto. By analyzing variables such as the type of application (minor variance or consent), the year of submission, and the planning district, this study seeks to understand how these elements shape the decision-making process. The primary objective is to determine the causal effects of these factors on approval outcomes, thereby offering perceptions into the dynamics of urban planning and regulatory processes. 
+This study aims to identify the factors influencing approval decisions for urban planning applications in Toronto. By analyzing variables such as the type of application (minor variance or consent), the year of submission, and the planning district, this study seeks to understand how these elements shape the decision-making process. The primary objective is to examine the causal effects of these factors on approval outcomes, thereby offering analysis of the dynamics of urban planning and regulatory processes. 
 
 
 # Data {#sec-data}
 
 ## Overview {#sec-data-overview}
 
-Our data [@committee_application] is extracted from opendatatoronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
+Our data [@committee_application] was extracted from opendatatoronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
 
-The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions provides awareness of urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
+The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the Committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions enhances comprehension of urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
-The analysis presented in this paper were conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were used in the process of data simulation, testing beforehand. After the original raw data was downloaded by using `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was done by using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style is corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Then, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were made with `ggplot2` package [@citeggplot] and `tidybayes` package [@citetidybayes]. Tables were constructed with `knitr` package [@citeknitr]. The model results are then presented by `modelsummary` [@citemodelsummary] package.
+The analysis presented in this paper was conducted using R programming language [@citeR]. The `tidyverse` packages [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow] were utilized for data simulation and testing. After the original raw data was downloaded using the `tidyverse` package [@citetidyverse], and `dplyr` package [@citedplyr], data cleaning process was carried out using `tidyverse` package [@citetidyverse], `dplyr` package [@citedplyr], and `arrow` package [@citearrow]. The code style was corrected by `here` package [@citehere], `lintr` package [@citelintr], and `styler` package [@citestyler]. Subsequently, models were constructed using `tidyverse` package [@citetidyverse], and `rstanarm` [@citerstanarm] package. Graphs were generated with `ggplot2` package [@citeggplot] and `tidybayes` package [@citetidybayes]. Tables were created with `knitr` package [@citeknitr]. The model results were presented by `modelsummary` [@citemodelsummary] package.
 
-Following @tellingstories, this paper uses Bayesian Logistic Model to explore factors that affect the application results.
+Following @tellingstories, this paper employs a Bayesian Logistic Model to explore factors that affect the application results.
 
-Although several similar datasets with overlapping themes were considered but ultimately not used due to limitations in scope, structure, or relevance. For instance, the Toronto Application Information Centre Dataset provides information on broader planning applications like rezoning requests and site plan approvals, but its complexity and inclusion of unrelated application types make it unsuitable for isolating patterns related to minor variances and consents. The Ontario Municipal Board (OMB) Decisions Dataset includes appeal outcomes, but its focus on contested cases introduces bias and omits the routine applications central to this study.
+Although several similar datasets with overlapping themes were considered but ultimately not used due to limitations in scope, structure, or relevance. For instance, the Toronto Application Information Centre Dataset provides information on broader planning applications like rezoning requests and site plan approvals, but its complexity and inclusion of unrelated application types made it unsuitable for isolating patterns related to minor variances and consents. The Ontario Municipal Board (OMB) Decisions Dataset includes appeal outcomes, but its focus on contested cases introduces bias and omits the routine applications central to this study.
 
-Consequently, focusing on the Committee of Adjustment Applications dataset [@committee_application] stands out for its granularity and relevance, enabling a focused analysis of approval trends and their influencing factors, which directly aligns with the study's goals.
+Consequently, focusing on the Committee of Adjustment Applications dataset [@committee_application] stands out for its granularity and relevance, enabling a focused analysis of approval trends and their influencing factors, which directly align with the study's goals.
 
 
 ## Measurement {#sec-data-measurement}
 	
-The dataset captures information on applications submitted to the City of Toronto’s Committee of Adjustment, providing a structured record of decisions made on zoning variances and consents. The dataset’s structure results from Toronto’s well-defined application process. When property owners or developers submit applications to the Committee of Adjustment, they provide detailed information about their project, including its location, purpose, and the specific variances or consents requested. These details are reviewed by committee staff and entered into a digital database, ensuring consistency and standardization.
+The dataset captures information on applications submitted to the City of Toronto’s Committee of Adjustment, providing a structured record of decisions made on zoning variances and consents. This structure reflects Toronto’s well-defined application process. When property owners or developers submit applications to the Committee of Adjustment, they provide detailed information about their project, including its location, purpose, and the specific variances or consents requested. These details are reviewed by committee staff and entered into a digital database, ensuring consistency and standardization.
 
-Applications to the Committee of Adjustment are typically submitted by property owners, developers, or their authorized agents (e.g. architects or planners). Eligibility to submit an application requires ownership or legal rights to the property in question. There are two types of application, minor variance (MV) and consents (CO). Consent applications address land subdivision for developments or sales, while Minor Variance applications request small adjustments to zoning regulations like setbacks or height limits. For consent applications, additional prerequisites include demonstrating compliance with existing zoning bylaws or providing documentation showing that the proposed subdivision aligns with city planning objectives. Minor variance applications, on the other hand, require applicants to show that the requested adjustments are “minor” in nature, do not conflict with broader zoning intentions, and maintain compatibility with the surrounding area. As a result, individuals submitting these applications are often professionals with expertise in urban planning, real estate, or development, or property owners working in consultation with such professionals.
+Applications to the Committee of Adjustment are typically submitted by property owners, developers, or their authorized agents (e.g. architects or planners). Eligibility requires ownership or legal rights to the property in question. There are two types of application, minor variance (MV) and consents (CO). Consent applications address land subdivision for developments or sales, while Minor Variance applications request small adjustments to zoning regulations like setbacks or height limits. For consent applications, additional prerequisites include demonstrating compliance with existing zoning bylaws or providing documentation showing that the proposed subdivision aligns with city planning objectives. Minor variance applications, on the other hand, require applicants to show that the requested adjustments are “minor” in nature, do not conflict with broader zoning intentions, and maintain compatibility with the surrounding area. As a result, individuals submitting these applications are often professionals with expertise in urban planning, real estate, or development, or property owners working in consultation with such professionals.
 
-Applications to the Committee of Adjustment can be submitted for properties located in one of Toronto’s defined planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. Each district represents a distinct geographic area within the city, characterized by varying levels of urban density, development patterns, and zoning requirements. The choice of district is determined by the location of the property for which the application is being made.
+Applications to the Committee of Adjustment can be submitted for properties in Toronto’s defined planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. Each district represents a distinct geographic area within the city, characterized by varying levels of urban density, development patterns, and zoning requirements. The choice of district is determined by the location of the property for which the application is being made.
 
-For the submission year, the dataset captures applications over a range of years, reflecting historical patterns and trends in urban development. Applications from earlier years may correspond to a period of slower development or more stringent zoning regulations, while more recent submissions could align with economic growth, population increases, or shifts in city planning priorities. For instance, years coinciding with major municipal initiatives or economic booms may see spikes in application numbers. By including the year of submission, the dataset provides a temporal dimension that connects development trends to broader economic and policy contexts, such as changes in zoning laws or housing demand.
+The dataset captures applications spanning multiple years, reflecting historical patterns and trends in urban development. Applications from earlier years may correspond to a period of slower development or more stringent zoning regulations, while more recent submissions could align with economic growth, population increases, or shifts in city planning priorities. For instance, years coinciding with major municipal initiatives or economic booms may see spikes in application numbers. By including the year of submission, the dataset provides a temporal dimension that connects development trends to broader economic and policy contexts, such as changes in zoning laws or housing demand.
 
-The data collection process begins with property owners or developers submitting applications through a centralized system. Application based surveys are collected. Each application includes essential details, which are systematically verified and recorded by administrative staff. Following public hearings, committee decisions (approval or refusal) are added to the database, completing the data entry process. The dataset is then maintained and periodically published by the City of Toronto, ensuring it remains accessible and accurate for public and analytical use.
+The data collection process begins when property owners or developers submitting applications through a centralized system. Application based surveys are collected. Each application includes essential details, which are systematically verified and recorded by administrative staff. Following public hearings, committee decisions (approval or refusal) are added to the database, completing the data entry process. The dataset is then maintained and regularly published by the City of Toronto, ensuring it remains accessible and accurate for public and analytical use.
 
-The dataset thus provides a structured lens through which to examine urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the detailed processes underlying urban development.
+The dataset serves as an effective tool for examining urban planning decisions. By distilling real-world phenomena—such as zoning adjustments and land use approvals—into discrete variables, the dataset enables systematic analysis of trends and relationships within Toronto’s regulatory framework. This structured approach ensures that the dataset is both practical for analysis and representative of the detailed processes underlying urban development.
 
 
 ## Data Cleaning {#sec-data-cleaning}
 
-To ensure the dataset was suitable for analysis, several high-level cleaning steps were performed. First, unused decision outcomes were filtered out, retaining only applications that were explicitly approved or refused. The `decision` variable was then converted into a binary format, with `1` representing approvals and `0` representing refusals, simplifying its use in modeling.
+To ensure the dataset was suitable for analysis, several cleaning steps were implemented. First, unused decision outcomes were removed, retaining only applications that were explicitly approved or refused. The `decision` variable was then converted into a binary format, with `1` representing approvals and `0` representing refusals, simplifying its use in modeling.
 
-A new variable, `year`, was constructed by extracting the year from the `in_date` field. This allowed for a clearer examination of temporal trends while maintaining the granularity of the original data. Applications from very early years with minimal counts were excluded to avoid bias and ensure a representative analysis of contemporary decision-making trends.
+A new variable, `year`, was constructed by extracting the year from the `in_date` field. This adjustment enabled a clearer examination of temporal trends while preserving the granularity of the original data. Applications from earlier years with minimal counts were excluded to avoid bias and ensure a representative analysis of contemporary decision-making trends.
 
-Additionally, key variables are selected out in cleaned dataset for convenience. More details will be explored in appendix.
+Additionally, key variables were selected in the cleaned dataset for convenience. More details are provided in the appendix.
 
 
 ## Features {#sec-data-feature}
 
 The dataset provides details of applications submitted to the Committee of Adjustment, focusing on key variables:
 
-- Decision: Indicates whether an application was approved or refused.
-- Application Type: Categorizes the application as either a minor variance or a consent.
-- Year: The year when the application was submitted.
-- Planning District: The geographic area within Toronto where the application originated.
+- **Decision**: Indicates whether an application was approved or refused.
+- **Application Type**: Categorizes the application as either a minor variance or a consent.
+- **Year**: The year when the application was submitted.
+- **Planning District**: The geographic area within Toronto where the application originated.
 
 ```{r}
 #| warning: false
@@ -144,7 +146,7 @@ ggplot(analysis_data, aes(x = factor(decision))) +
   )
 ```
 
-@fig-decision illustrates the distribution of decision outcomes. Out of the total applications, 1,207 (66.5%) were approved, while 607 (33.5%) were refused. This demonstrates that the majority of applications submitted to the Committee of Adjustment are approved, suggesting that most requests align with zoning regulations or are deemed acceptable following the committee's review process.
+@fig-decision illustrates the distribution of decision outcomes. Out of the total applications, 1,207 (66.5%) were approved, while 607 (33.5%) were refused. This indicates that most applications are approved, suggesting that most requests align with zoning regulations or are deemed acceptable following the committee's review process.
 
 ```{r}
 #| warning: false
@@ -170,7 +172,7 @@ decision_summary %>%
   )
 ```
 
-@tbl-decision provides a clear picture of the approval and refusal rates within the dataset, highlighting a relatively high likelihood of approval for submitted applications.
+@tbl-decision summarizes the approval and refusal rates in the dataset, emphasizing a relatively high likelihood of approval for submitted applications.
 
 
 ## Predictor variables {#sec-data-predictor}
@@ -179,11 +181,11 @@ decision_summary %>%
 
 The application type variable categorizes each application submitted to the Committee of Adjustment into two types:
 
-Consent (CO): Requests related to the subdivision of land into separate parcels, often for new developments or property sales.
+- Consent (CO): Requests related to the subdivision of land into separate parcels, often for new developments or property sales.
 
-Minor Variance (MV): Applications seeking small adjustments to zoning regulations, such as building setbacks, height limits, or lot coverage.
+- Minor Variance (MV): Applications seeking small adjustments to zoning regulations, such as building setbacks, height limits, or lot coverage.
 
-These categories represent distinct regulatory processes, with Consents generally requiring more extensive evaluation compared to Minor Variances due to their implications on land use.
+These categories represent distinct regulatory processes. Consents generally require more extensive evaluation than Minor Variances due to their implications on land use.
 
 ```{r}
 #| label: fig-application-types
@@ -210,7 +212,7 @@ ggplot(analysis_data, aes(x = factor(application_type))) +
   )
 ```
 
-@fig-application-types presents the distribution of applications by type. Minor Variances account for the majority of applications which reach to 1371 (75.6%), reflecting the routine nature of these requests in urban development. In contrast, Consents are less frequent which only have 443 counts (24.4%), likely due to their more specific requirements and potential complexity.
+@fig-application-types presents the distribution of applications by type. Minor Variances account for the majority of applications which reach to 1371 (75.6%), reflecting the routine nature of these requests in urban development. In contrast, Consents are less frequent, with 443 submissions (24.4%), likely due to their more specific requirements and potential complexity.
 
 ```{r}
 #| warning: false
@@ -238,9 +240,9 @@ application_summary %>%
   )
 ```
 
-@tbl-application-type emphasize the dominance of Minor Variances in the dataset, providing context for their role in urban development.
+@tbl-application-type highlights the prevalence of Minor Variances in the dataset, providing context for their role in urban development.
 
-The relationship between application_type and the outcome variable decision will be explored further to determine if approval rates differ between Minor Variances and Consents. Preliminary trends suggest that Minor Variances may have higher approval rates due to their less complex nature. Additional analyses may examine whether these patterns vary by planning district or year.
+The relationship between application_type and the outcome variable decision will be explored further to determine if approval rates differ between Minor Variances and Consents. Preliminary trends indicate that Minor Variances may have higher approval rates, potentially due to their less complex nature. Additional analyses may examine whether these patterns vary by planning district or year.
 
 
 ### Year
