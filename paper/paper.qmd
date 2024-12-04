@@ -440,23 +440,23 @@ The model assumes that relevant predictors are included and correctly specified.
 
 ## Potential Limitation and Addressing Violation
 
-Violations of the above assumptions can impact this model’s validity while severl solution are listed below:
+Violations of the above assumptions can impact this model’s validity while several solutions are listed below:
 
-1. Non-linearity:
+1. **Non-linearity**
 Adding polynomial terms or splines could address non-linear relationships if diagnostic checks suggest deviations.
 
-2. Dependence:
+2. **Dependence**
 If observations are not independent (e.g. decisions clustered by region), hierarchical models or random effects may be introduced.
 
-3. Multicollinearity:
-Variance inflation factors or correlation matrices can help identify multicollinearity issues, which can be resolved by removing or combining correlated predictors.
+3. **Multicollinearity**
+Variance inflation factors or correlation matrices can identify multicollinearity issues, which can be resolved by removing or combining correlated predictors.
 
-By adhering to these assumptions and addressing potential violations, the Bayesian logistic regression model provides a robust and effective framework for analyzing the factors influencing application outcomes.
+By adhering to these assumptions and addressing potential violations, the Bayesian logistic regression model offers a reliable framework for analyzing the factors influencing application outcomes.
 
 
 ## Model Validation
 
-To ensure the robustness and reliability of the Bayesian logistic regression model, a series of validation and diagnostic steps were conducted. Detailed plots and results, including posterior predictive checks (PPC), posterior vs. prior comparisons, and convergence diagnostics, are provided in the appendix for further examination. Below, the focus is on key validation method of **out of sampling**:
+To ensure the robustness and reliability of the Bayesian logistic regression model, a series of validation and diagnostic steps was conducted. Detailed plots and results, including posterior predictive checks (PPC), posterior vs. prior comparisons, and convergence diagnostics, are provided in the appendix for further examination. Below, the focus is on key validation method of **out-of-sample testing**:
 
 The dataset was split into a training set (80%) and a test set (20%) to evaluate the model's predictive performance on unseen data. The model was trained on the training set, and predictions were made on the test set. Classification accuracy was calculated as the proportion of correctly classified outcomes in the train set and test set. This approach assesses the model's generalizability.
 
@@ -487,7 +487,7 @@ accuracy_summary %>%
   )
 ```
 
-@tbl-accuracy presents the train and test accuracy. The model's training accuracy of 66.75% and test accuracy of 66.575% are quite close, indicating that the model generalizes reasonably well between the training and test datasets. However, the relatively low accuracy on both datasets suggests the presence of underfitting, where the model fails to capture the complexity of the data and adequately explain the variance in the outcomes. This could result from the model being too simplistic, with insufficient predictors or inadequate representation of the data's structure. Additionally, potential issues like noisy or unbalanced data, insufficient feature engineering, or a lack of higher-order interactions and non-linearities in the model could contribute to this underfitting.
+@tbl-accuracy shows the train and test accuracy. The model's training accuracy of 66.75% and test accuracy of 66.575% are quite close, indicating that the model generalizes reasonably well between the training and test datasets. However, the relatively low accuracy on both datasets suggests underfitting, where the model fails to capture the complexity of the data and adequately explain the variance in the outcomes. This could result from the model being too simplistic, with insufficient predictors or inadequate representation of the data structure. Additional factors, such as noisy or unbalanced data, limited feature engineering, or a lack of higher-order interactions and non-linearities in the model could also contribute to this underfitting.
 
 
 # Results{#sec-result}
@@ -525,20 +525,19 @@ modelsummary::modelsummary(
 )
 ```
 
-The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, provide observations into both the direction and magnitude of each predictor’s impact on the approval decision.
+The result highlights how the predictors influence the likelihood of application approval while controlling for other variables. The coefficients, presented as log-odds, indicate both the direction and magnitude of each predictor’s impact on approval decisions.
 
-The intercept estimate of -0.06 represents the baseline (an application of CO subimited in 2016 at Etobicoke York) log-odds of approval when all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
+The intercept estimate of -0.06 represents the baseline log-odds of approval for a consent (CO) application submitted in 2016 in Etobicoke York, where all predictors are at their reference levels. This corresponds to a baseline probability close to 0.5, indicating nearly equal odds of approval or refusal in the absence of other influencing factors. This serves as a neutral starting point for understanding how the predictors shift the likelihood of approval.
 
-The variable application_typeMV, with a coefficient of -0.20, suggests that applications for minor variances (MV) are less likely to be approved compared to consents (CO), which act as the reference category. In terms of odds, the transition from a consent to a minor variance reduces the odds of approval by approximately 18% ($e^{-0.20}\approx 0.82$). This finding aligns with expectations, as minor variances may face stricter scrutiny due to their potentially greater impact on local zoning adjustments.
+The variable application_typeMV, with a coefficient of -0.20, suggests that applications for minor variances (MV) are less likely to be approved than consents (CO). In terms of odds, the transition from a consent to a minor variance reduces approval odds by approximately 18% ($e^{-0.20}\approx 0.82$). This aligns with expectations, as minor variances may face stricter scrutiny due to their potentially greater impact on local zoning adjustments.
 
-The year variables display significant temporal variations in approval likelihood, using 2016 as the reference year. These coefficients highlight how approval dynamics have shifted over time. For instance, in 2017, the coefficient of 0.74 indicates a 109% increase in the odds of approval compared to 2016 ($e^{0.74} \approx 2.09$), which suggests a substantial policy or procedural shift. In 2018, the strongest positive effect is observed, with a coefficient of 0.96, reflecting a 161% increase in odds relative to 2016 ($e^{0.96} \approx 2.61$). However, in 2019, the coefficient drops to 0.22, representing a smaller increase of 25% in odds ($e^{0.22} \approx 1.25$), suggesting that this period may have faced stricter reviews or procedural adjustments. By 2020, the coefficient rebounds to 0.56, translating to a 75% increase in odds ($e^{0.56} \approx 1.75$).
+The year variables demonstrate significant temporal variations in approval likelihood, using 2016 as the reference year. These coefficients highlight how approval dynamics have shifted over time. In 2017, the coefficient of 0.74 indicates a 109% increase in the odds of approval compared to 2016 ($e^{0.74} \approx 2.09$), which suggests a substantial policy or procedural shift. In 2018, the strongest positive effect is observed, with a coefficient of 0.96, reflecting a 161% increase in odds relative to 2016 ($e^{0.96} \approx 2.61$). However, in 2019, the coefficient drops to 0.22, representing a smaller increase of 25% ($e^{0.22} \approx 1.25$), suggesting that this period may have faced stricter reviews or procedural adjustments. By 2020, the coefficient rebounds to 0.56, translating to a 75% increase ($e^{0.56} \approx 1.75$).
 
-For more recent years, 2021 sees a coefficient of 0.34, showing a 40% increase in odds ($e^{0.34} \approx 1.40$). In 2022, the coefficient is 0.28, reflecting a 32% increase ($e^{0.28} \approx 1.32$). In 2023, approvals surged again, with a coefficient of 0.99, representing a 170% increase in odds ($e^{0.99} \approx 2.69$). Finally, 2024 showed the highest increase, with a coefficient of 1.24, translating to a 245% increase in approval odds compared to the baseline year of 2016 ($e^{1.24} \approx 3.46$). This steady upward trend reflects systemic improvements in the approval process, possibly due to increased efficiency, evolving zoning policies, or external influences favoring development.
+For more recent years, 2021 shows a coefficient of 0.34, showing a 40% increase in odds ($e^{0.34} \approx 1.40$). In 2022, the coefficient is 0.28, reflecting a 32% increase ($e^{0.28} \approx 1.32$). In 2023, approvals surged again, with a coefficient of 0.99, representing a 170% increase in odds ($e^{0.99} \approx 2.69$). Finally, 2024 showed the highest increase, with a coefficient of 1.24, translating to a 245% increase in approval odds compared to the baseline year of 2016 ($e^{1.24} \approx 3.46$). This upward trend reflects improvements in the approval process, possibly due to increased efficiency, evolving zoning policies, or external influences favoring development.
 
-The model captures geographic variability in approval rates across Toronto’s planning districts. North York, with a coefficient of 0.41, shows a 50% increase in odds compared to the baseline district ($e^{0.41} \approx 1.50$), highlighting its role as a development hub and its alignment with urban growth priorities. Scarborough, on the other hand, has the lowest approval likelihood, with a coefficient of 0.16, indicating a modest 17% increase in odds ($e^{0.16} \approx 1.17$), suggesting challenges related to stricter zoning rules or community resistance to changes. Toronto East York has a coefficient of 0.33, showing a 39% increase in odds ($e^{0.33} \approx 1.39$), reflecting its mix of heritage preservation and urban development priorities. The results emphasize that approval rates vary significantly across districts due to localized zoning policies, development pressures, and socio-political factors influencing decision-making.
+The model captures geographic variability in approval rates across Toronto’s planning districts. North York, with a coefficient of 0.41, shows a 50% increase in odds compared to Etobicoke York ($e^{0.41} \approx 1.50$), highlighting its role as a development hub with urban growth priorities. Scarborough has the lowest approval likelihood, with a coefficient of 0.16, indicating a modest 17% increase in odds ($e^{0.16} \approx 1.17$), suggesting challenges related to stricter zoning rules or community resistance to changes. Toronto East York has a coefficient of 0.33, showing a 39% increase in odds ($e^{0.33} \approx 1.39$), reflecting its mix of heritage preservation and urban development priorities. The results emphasize localized influences on approval rates due to zoning policies, development pressures, and socio-political factors.
 
-In summary, the model presents key patterns in how application type and submission year influence the likelihood of approval. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2020. These findings provide a foundation for understanding the dynamics of approval decisions and highlight areas for further investigation, such as geographic variability or interactions between predictors.
-
+In summary, the model displays how application type and submission year influence the approval likelihood. Minor variance applications face slightly lower odds of approval compared to consents, while temporal trends indicate an overall increase in approval rates from 2016 to 2024. Geographic variability further highlights differences across planning districts. These findings provide a basis for examining factors such as localized dynamics or interactions between predictors.
 
 ```{r}
 #| label: fig-pp-type
@@ -592,7 +591,7 @@ ggplot(predict_data_long, aes(x = application_type, y = prob)) +
   theme_minimal()
 ```
 
-@fig-pp-type demonstrates variability in the predicted probability of approval between consent applications (CO) and minor variances (MV). Consent applications exhibit a slightly higher median predicted probability of approval compared to minor variances. The interquartile range (IQR) for both application types is comparable, indicating a similar spread of probabilities. However, minor variance applications show a broader lower whisker, suggesting that certain cases have substantially lower probabilities of approval. This supports the interpretation that minor variances may face stricter scrutiny due to their greater potential impact on zoning.
+@fig-pp-type demonstrates variability in the predicted probability of approval between consent applications (CO) and minor variances (MV). Consent applications exhibit a slightly higher median predicted probability of approval compared to minor variances. Both application types have similar interquartile ranges (IQR), but minor variances exhibit a broader lower whisker, reflecting stricter scrutiny for certain cases.
 
 ```{r}
 #| label: fig-pp-year
@@ -630,7 +629,7 @@ ggplot(predict_data_long, aes(x = planning_district, y = prob)) +
   theme_minimal()
 ```
 
-@fig-pp-district evaluates geographic variability in approval probabilities across the four planning districts: Etobicoke York, North York, Scarborough, and Toronto East York. North York consistently shows the highest median predicted probability of approval, reaffirming its status as a development hub with favorable zoning outcomes. In contrast, Scarborough exhibits the lowest median and a wider spread of probabilities, with outliers indicating challenging cases. Toronto East York and Etobicoke York present intermediate medians, suggesting more balanced approval probabilities in these regions. These geographic differences highlight the influence of localized development dynamics and zoning considerations on approval outcomes.
+@fig-pp-district evaluates geographic variability in approval probabilities across the four planning districts. North York consistently shows the highest median predicted probability of approval, reaffirming its development hub with favorable zoning outcomes. Scarborough has the lowest median and a wider spread of probabilities, with outliers indicating challenging cases. Toronto East York and Etobicoke York present intermediate medians, suggesting more balanced approval probabilities in these regions. These geographic differences highlight the influence of localized development dynamics and zoning considerations on approval outcomes.
 
 
 # Discussion{#sec-dis}
