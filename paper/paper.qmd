@@ -50,7 +50,7 @@ This study aims to identify the factors influencing approval decisions for urban
 
 ## Overview {#sec-data-overview}
 
-Our data [@committee_application] was extracted from opendatatoronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
+The data about Committee of Adjustment Applications [@committee_application] was extracted from Open Data Toronto [@opendatatoronto]. This dataset focuses on applications submitted to the City of Toronto's Committee of Adjustment, a governing body responsible for reviewing minor variance and consent applications related to land use and development. These applications are submitted by property owners and developers seeking permission to deviate from existing zoning regulations or to subdivide land. The Committee’s decisions—whether to approve or refuse an application—have significant implications for urban development, community planning, and city growth.
 
 The Committee of Adjustment plays a key role in Toronto’s urban planning ecosystem. It ensures that deviations from zoning bylaws align with the city’s broader development objectives, maintaining a balance between flexibility for property owners and adherence to long-term planning goals. The decisions made by the Committee are influenced by various factors, including the type of application, geographic considerations (e.g. planning districts), and the timing of submission. Understanding these decisions enhances comprehension of urban planning dynamics and the regulatory challenges faced by a growing city like Toronto.
 
@@ -738,7 +738,11 @@ pp_check(model) +
 
 posterior_vs_prior(model) +
   theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
+  theme(
+    axis.text.x = element_text(hjust = 1, vjust = 0.5),
+    text = element_text(size = 6)
+  ) +
+  guides(color = guide_legend(ncol = 6)) +
   theme(legend.position = "bottom") +
   coord_flip()
 ```
