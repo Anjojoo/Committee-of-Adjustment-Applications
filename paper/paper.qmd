@@ -247,7 +247,7 @@ The relationship between application_type and the outcome variable decision will
 
 ### Year
 
-The year variable represents the year of submission for each application in the dataset. It provides awareness into temporal trends in applications submitted to the Committee of Adjustment. This variable is instrumental in identifying changes in the volume of applications over time, which may reflect policy shifts, urban development trends, or external factors like economic conditions.
+The year variable represents the year of submission for each application in the dataset. It reflects temporal trends in applications submitted to the Committee of Adjustment. This variable is instrumental in identifying changes in the volume of applications over time, which may reflect policy shifts, urban development trends, or external factors like economic conditions.
 
 ```{r}
 #| label: fig-year
@@ -274,7 +274,7 @@ ggplot(analysis_data, aes(x = factor(year))) +
   )
 ```
 
-@fig-year clarifies the distribution of applications from 2016 to 2024, with notable fluctuations in annual counts. Fewer applications were submitted during 2016-2019, with counts declining steadily from 198 applications in 2016 to a low of 93 in 2019. This period may reflect a stabilization phase or lower activity in urban development processes. Afterwards, application counts increased significantly, peaking in 2023 with 378 applications, followed by a slight decline to 249 in 2024. The rise in 2023 may be due to heightened development activity or easing of restrictions from prior external events, such as the COVID-19 pandemic.
+@fig-year illustrates the distribution of applications from 2016 to 2024, with notable fluctuations in annual counts. Fewer applications were submitted from 2016 to 2019, with a steady decline from 198 applications in 2016 to a low of 93 in 2019. This period may reflect a stabilization phase or lower activity in urban development processes. Application counts then increased significantly, peaking at 378 applications in 2023, before declining slightly to 249 in 2024. The rise in 2023 may be due to heightened development activity or easing of restrictions from prior external events, such as the COVID-19 pandemic.
 
 ```{r}
 #| warning: false
@@ -299,14 +299,14 @@ year_summary %>%
   )
 ```
 
-@tbl-year states how each year contributes to the total volume of applications.
+@tbl-year summarizes each year's contribution to the total volume of applications.
 
-The year variable is likely related to the decision outcome and application type. As approval rates may have varied over time due to changing city planning policies or committee priorities. Besides, temporal trends may highlight shifts in the proportion of Minor Variances (MV) versus Consents (CO), reflecting evolving development demands.
+The year variable is likely related to the decision outcome and application type. Approval rates may have varied over time, potentially due to shifts in city planning policies or committee priorities. Besides, temporal trends may highlight shifts in the proportion of Minor Variances (MV) versus Consents (CO), reflecting evolving development demands.
 
 
 ### Planning District
 
-The planning district variable identifies the geographic district within Toronto where an application was submitted. The city is divided into four planning districts, each with its own development characteristics and zoning regulations. These districts are pivotal for understanding spatial trends in application submissions and outcomes, as local policies and priorities can influence decision-making processes.
+The planning district variable identifies the geographic district within Toronto where an application was submitted. The city is divided into four planning districts, each with its own development characteristics and zoning regulations. This variable helps identify spatial trends in application submissions and outcomes, as local policies and priorities can influence decision-making processes.
 
 ```{r}
 #| label: fig-district
@@ -334,7 +334,7 @@ ggplot(analysis_data, aes(x = factor(planning_district))) +
   )
 ```
 
-@fig-district displays the distribution of applications across four planning districts. We can observe that North York has the highest number of applications, accounting for a significant proportion of the dataset. This could reflect the area's high density of development projects or active property owners seeking zoning adjustments. Scarborough has the fewest applications, possibly due to fewer development activities or stricter zoning compliance. Etobicoke York and Toronto East York have moderate numbers of applications, reflecting their roles as active but less prominent districts compared to North York.
+@fig-district displays the distribution of applications across four planning districts. North York has the highest number of applications, representing a significant proportion of the dataset. This could reflect the area's high density of development projects or active property owners seeking zoning adjustments. Scarborough has the fewest applications, possibly due to fewer development activities or stricter zoning compliance. Etobicoke York and Toronto East York have moderate numbers of applications, reflecting their roles as active but less prominent districts compared to North York.
 
 ```{r}
 #| warning: false
@@ -358,22 +358,22 @@ district_summary %>%
   )
 ```
 
-@tbl-district provide a view of how applications are distributed spatially across the city.
+@tbl-district summarizes how applications are distributed spatially across the city.
 
-The planning_district variable may also interacts with application type and decision. Approval rates may vary by district, reflecting differences in local policies or development dynamics. The proportion of Minor Variances (MV) versus Consents (CO) may differ across districts, indicating distinct development priorities or zoning challenges.
+The planning district variable may also interact with application type and decision. Approval rates may vary by district, reflecting differences in local policies or development dynamics. The proportion of Minor Variances (MV) versus Consents (CO) may differ across districts, indicating distinct development priorities or zoning challenges.
 
 
 # Model {#sec-model}
 
-In this paper, a Bayesian logistic model will be utilized to understand how factors such as application type, submission year, and planning district influence the decisions of the application committee. This model estimates the probability of an application being approved (P(Approval)) based on the given predictors.
+In this paper, a Bayesian logistic model is employed to understand how factors such as application type, submission year, and planning district influence the decisions of the application committee. This model estimates the probability of an application being approved (P(Approval)) based on the given predictors.
 
-The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach is well-suited for incorporating prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
+The goal of this modeling strategy is twofold: (1) to estimate how each predictor affects the likelihood of approval, and (2) to quantify the uncertainty associated with these estimates. This approach accommodates prior knowledge while addressing the hierarchical nature of the predictors, such as geographic regions.
 
 We run the model in R [@citeR] using the `rstanarm` package of @citerstanarm. `rstanarm` [@citerstanarm] is used to set up the model.`tidybayes` package [@citetidybayes] is used to plot predicted probabilities in for result analysis.
 
 Here we briefly describe the Bayesian analysis model used to investigate, and include justification for model and the variables, as well as discuss underlying assumptions, potential limitations, and evidence of model validation and checking.
 
-Background details and diagnostics are included in [Appendix -@sec-model-details].
+Additional details and diagnostics are included in [Appendix -@sec-model-details].
 
 ## Model set-up
 
@@ -399,43 +399,43 @@ Combining all the components, the complete model can be expressed as:
 - $\beta_2$: Coefficient for year, measured as the year of application to capture temporal trends.
 - $\beta_3$: Coefficients for planning district, dummy-coded with North York as the reference category.
 
-In the above Bayesian logistic regression model, the coefficients $\beta = {\beta_0, \beta_1, \beta_2, \beta_3}$ are treated as random variables, each following a specified prior distribution. These priors represent our initial beliefs about the plausible values of the coefficients before observing the data. In this model, each $\beta_k$ (where k=0,1,2,3) is assigned a normal distribution, with a zero mean and 2.5 standard deviation. The choice of these parameters reflects a weakly informative prior, centered around zero to express no strong prior belief about the direction or magnitude of the effects, while allowing for reasonable variability in the coefficient estimates.
+In the above Bayesian logistic regression model, the coefficients $\beta = {\beta_0, \beta_1, \beta_2, \beta_3}$ are treated as random variables, each assigned a Normal prior distribution, with a zero mean and 2.5 standard deviation. These priors reflect weakly informative beliefs, expressing no strong assumption about the direction or magnitude of effects while allowing for reasonable variability in the estimates.
 
-The normal distribution is particularly suitable for these priors because it reflects a belief that most effects are likely to be small or moderate, centered around zero, while allowing for deviations in either direction. The standard deviation of 2.5 is a practical choice for weakly informative priors, offering a balance between constraining the parameters and allowing the data to influence the estimates. This ensures that the model avoids overfitting, particularly when data is sparse or multicollinearity exists among predictors.
+The Normal distribution is appropriate for these priors as it assumes most effects are small or moderate, centered around zero, while permitting deviations in either direction. A standard deviation of 2.5 offers a balance between constraining the parameters and allowing the data to influence the estimates. This ensures that the model avoids overfitting, particularly when data is sparse or multicollinearity exists among predictors.
 
-After observing the data, the posterior distributions of $\beta$ are obtained by combining these priors with the likelihood of the observed outcomes. The resulting posterior distributions provide updated beliefs about the coefficients, incorporating both prior knowledge and evidence from the data. This approach allows for robust inference, offering a clear quantification of parameter uncertainty and supporting more detailed interpretations of the predictors' effects.
+After observing the data, the posterior distributions of $\beta$ are derived by combining the priors with the likelihood of the observed outcomes. These posterior distributions represent updated beliefs about the coefficients, integrating both prior knowledge with evidence from the data. This approach provides robust inference, quantifies parameter uncertainty, and supports detailed interpretations of the predictors' effects.
 
 
 ## Model justification
 
-The Bayesian logistic regression model is an appropriate choice for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which quantifies uncertainty more effectively than frequentist alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach enhances flexibility and provides richer revelations through posterior distributions.
+The Bayesian logistic regression model is suitable for analyzing how application type, submission date, and planning district influence the likelihood of application approval. This choice is driven by the binary nature of the response variable, the model's ability to incorporate prior knowledge, and its probabilistic framework, which effectively quantifies uncertainty than alternatives. Logistic regression naturally constrains predicted probabilities to the [0,1] interval, ensuring interpretability as likelihoods of approval, while the Bayesian approach adds flexibility and provides richer revelations through posterior distributions.
 
-Compared to traditional generalized linear models (GLM), the Bayesian approach allows for the inclusion of prior beliefs through weakly informative priors ($N(0, 2.5)$) for all coefficients. These priors help stabilize the model, particularly in cases where data is sparse or multicollinear, without overwhelming the contribution of the observed data. Additionally, Bayesian methods yield full posterior distributions rather than single-point estimates, allowing for a clearer understanding of parameter uncertainty and a better capacity to incorporate uncertainty into decision-making processes. These advantages make the Bayesian logistic regression model preferable to a standard GLM, which provides point estimates and relies on asymptotic approximations for inference.
+Compared to traditional generalized linear models (GLM), the Bayesian approach allows for the inclusion of prior beliefs through weakly informative priors ($N(0, 2.5)$) for all coefficients. These priors help stabilize the model, particularly in cases where data is sparse or multicollinear, without overwhelming the contribution of the observed data. Additionally, Bayesian methods yield full posterior distributions rather than single-point estimates, offering a clearer view of parameter uncertainty and a better capacity to incorporate uncertainty into decision-making processes. These advantages make the Bayesian logistic regression model preferable to a standard GLM, which provides point estimates and relies on asymptotic approximations for inference.
 
-The model also stands out against simpler approaches, such as simple linear regression (SLR). While SLR might be used for binary outcomes in certain contexts, it is theoretically inappropriate because it does not constrain predictions to the [0,1] interval. This can result in nonsensical predicted probabilities outside this range. Moreover, SLR assumes a linear relationship between predictors and the response variable, which is unsuitable for binary outcomes. The logit transformation in logistic regression, by contrast, ensures a proper probabilistic framework while preserving interpretability in terms of log-odds.
+The model also addresses limitations of simpler methods, such as simple linear regression (SLR). While SLR might be used for binary outcomes in certain contexts, it is theoretically inappropriate because it does not constrain predictions to the [0,1] interval. This can result in nonsensical predicted probabilities outside this range. Moreover, SLR assumes a linear relationship between predictors and the response variable, which is unsuitable for binary outcomes. The logit transformation in logistic regression, by contrast, ensures a proper probabilistic framework and preserves interpretability in terms of log-odds.
 
 The predictors included in the model further justify the choice of Bayesian logistic regression. Application type captures fundamental differences in how various categories of applications, such as minor variances and consents, might affect approval outcomes. Submission date is treated as a continuous variable, reflecting temporal trends without arbitrary grouping, while planning district accounts for geographic variability through categorical indicators. These predictors are naturally suited to a logistic framework, and the Bayesian approach accommodates any inherent variability in their effects.
 
-`Mostly Harmless Econometrics` (@angrist2009mostly) addresses how to handle variability in time-series and cross-sectional data, focusing on ensuring robust and interpretable results. The use of submission year and planning district as key predictors aligns with Angrist and Pischke's guidance on analyzing temporal and geographic variation. Their discussion on the importance of controlling for time trends and location-specific effects validates the inclusion of these variables in the Bayesian logistic regression model.
+`Mostly Harmless Econometrics` (@angrist2009mostly) emphasizes addressing variability in time-series and cross-sectional data, focusing on ensuring robust and interpretable results. The inclusion of submission year and planning district as predictors follows Angrist and Pischke's guidance on controlling for time trends and location-specific effects, validating their relevance in this model.
 
-In summary, Bayesian logistic regression provides a robust, clarified, and flexible framework for analyzing the factors influencing application decisions. Its advantages over GLM and SLR include the ability to incorporate prior information, quantify uncertainty, and handle the non-linear nature of the binary response variable. By balancing methodological rigor with practical transparency, this model ensures that the analysis remains both statistically sound and actionable for stakeholders.
+In summary, Bayesian logistic regression offers a robust and transparent framework for analyzing the factors influencing application decisions. Its advantages over GLM and SLR include the ability to incorporate prior information, quantify uncertainty, and handle the non-linear nature of the binary response variable. By balancing methodological rigor with practical transparency, this model ensures that the analysis remains both statistically sound and actionable for stakeholders.
 
 
 ## Model Assumption
 
-This Bayesian model relies on several assumptions that ensure the validity of its predictions and the transparency of its coefficients. While these assumptions are generally less restrictive than those for simpler models like linear regression, they remain important to the robustness of the results. The key assumptions are listed below:
+This Bayesian model relies on several assumptions to ensure the validity of its predictions and the interpretability of its coefficients. While these assumptions are less restrictive than those for simpler models like linear regression, they remain important to the robustness of the results. The key assumptions are as follows:
 
-1. Binary Response Variable
-The model assumes that the response variable ($y$) is binary, taking values of either 1 (approval) or 0 (refused). This assumption aligns with the nature of the data, as application decisions are dichotomous outcomes. Any deviations from binary coding would invalidate the logistic framework and require alternative modeling approaches.
+1. **Binary Response Variable**
+The model assumes that the response variable ($y$) is binary, taking values of either 1 (approval) or 0 (refused). This assumption aligns with the nature of the data, as application decisions are dichotomous. Deviations from binary coding would invalidate the logistic framework and require alternative modeling approaches.
 
-2. Independence of Observations:
-The model assumes that all observations are independent of one another. This is reasonable for application data, as each decision is typically made independently by the committee. However, if clustering or dependence exists (e.g., decisions within the same planning district are correlated), the model may need to incorporate hierarchical or random effects to address these dependencies.
+2. **Independence of Observations**
+The model assumes that all observations are independent. This is reasonable for application data, as decisions are typically made independently by the committee. However, if clustering or dependence exists (e.g. correlated decisions within the same planning district), the model may require hierarchical or random effects to account for these dependencies.
 
-3. No Perfect Multicollinearity
-Logistic regression assumes that the predictors are not perfectly correlated, as this would prevent the model from estimating unique coefficients. For example, if a predictor is a linear combination of other predictors, the model would fail to converge. In this analysis, categorical variables of application type and planning district are appropriately encoded to avoid such issues.
+3. **No Perfect Multicollinearity**
+Logistic regression assumes that the predictors are not perfectly correlated, as this would prevent the model from unique coefficients. For example, if a predictor is a linear combination of other predictors, the model would fail to converge. In this analysis, categorical variables of application type and planning district are properly encoded to avoid such issues.
 
-4. Proper Model Specification
-The model assumes that all relevant predictors are included and correctly specified. Omitting important variables or including irrelevant ones could lead to biased estimates or reduced transparency. For example, excluding interaction terms when they are theoretically justified might result in incomplete understanding of the predictors' effects.
+4. **Proper Model Specification**
+The model assumes that relevant predictors are included and correctly specified. Omitting important variables or including irrelevant ones could lead to biased estimates or reduced transparency. For example, excluding interaction terms when they are theoretically justified might lead to an incomplete understanding of the predictors' effects.
 
 
 ## Potential Limitation and Addressing Violation
