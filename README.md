@@ -20,4 +20,4 @@ The repo is structured as:
 
 ## Statement on LLM usage
 
-ChatGPT 4o mini was used to provide assistance on coding, resolving issues occurring in the process of constructing models, and on interpreting and evaluating models. Entire chat history is available in `other/llms/usage.txt`.
+ChatGPT 4o mini was used to provide assistance on coding, resolving issues occurring in the process of constructing models, and on interpreting and evaluating models. Entire chat history is available in `other/llm_usage/usage.txt`.
